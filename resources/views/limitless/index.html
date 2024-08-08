@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Limitless - Responsive Web Application Kit by Eugene Kopyov</title>
+
+	<!-- Global stylesheets -->
+    <link href="assets/fonts/inter/inter.css" rel="stylesheet" type="text/css">
+    <link href="assets/icons/phosphor/styles.min.css" rel="stylesheet" type="text/css">
+    <link href="assets/css/all.min.css" id="stylesheet" rel="stylesheet" type="text/css">
+	<!-- /global stylesheets -->
+
+	<!-- Core JS files -->
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script src="assets/js/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/jquery/jquery.min.js"></script>
+    <script src="quform/js/plugins.js"></script>
+    <script src="quform/js/scripts.js"></script>
+	<!-- /core JS files -->
+
+    <script>
+        window.QuformRecaptchaLoaded = function () {
+            if (window.grecaptcha && window.jQuery) {
+                jQuery('.g-recaptcha').each(function () {
+                    var $recaptcha = jQuery(this);
+
+                    if ($recaptcha.is(':empty')) {
+                        $recaptcha.data('recaptcha-id', grecaptcha.render($recaptcha[0]));
+                    }
+                });
+            }
+        };
+    </script>
+    <script src="https://www.google.com/recaptcha/api.js?onload=QuformRecaptchaLoaded&render=explicit" async defer></script>
+
+	<!-- Theme JS files -->
+	<script src="assets/js/app.js"></script>
+	<!-- /theme JS files -->
+</head>
+
+<body>
+
+    <!-- Page content -->
+    <div class="page-content">
+
+        <!-- Main content -->
+        <div class="content-wrapper">
+
+            <!-- Hero unit -->
+        	<div class="gradient-8">
+
+                <!-- Main navbar -->
+                <div class="navbar navbar-dark navbar-expand-lg bg-black bg-opacity-10 border-bottom border-bottom-white border-opacity-25">
+                    <div class="container">
+                        <div class="navbar-brand flex-1 flex-lg-0">
+                            <a href="index.html" class="d-inline-flex align-items-center">
+                                <img src="assets/images/logo_icon.svg" alt="">
+                                <img src="assets/images/logo_text_light.svg" class="h-16px ms-3" alt="">
+                            </a>
+                        </div>
+
+                        <ul class="nav hstack gap-sm-1 ms-auto">
+                            <li class="nav-item">
+                                <a href="https://themeforest.net/item/limitless-responsive-web-application-kit/13080328/comments" class="navbar-nav-link navbar-nav-link-icon rounded" target="_blank">
+                                    <div class="hstack gap-2 mx-lg-1">
+                                        <i class="ph-chats"></i>
+                                        <span class="d-none d-lg-inline-block">Comments</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://themeforest.net/item/limitless-responsive-web-application-kit/reviews/13080328" class="navbar-nav-link navbar-nav-link-icon rounded" target="_blank">
+                                    <div class="hstack gap-2 mx-lg-1">
+                                        <i class="ph-star"></i>
+                                        <span class="d-none d-lg-inline-block">Reviews</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://kopyov.ticksy.com/" class="navbar-nav-link navbar-nav-link-icon rounded" target="_blank">
+                                    <div class="hstack gap-2 mx-lg-1">
+                                        <i class="ph-lifebuoy"></i>
+                                        <span class="d-none d-lg-inline-block">Support</span>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- /main navbar -->
+                
+
+                <!-- Jumbotron -->
+                <div class="text-white py-2 py-sm-4 my-3">
+        			<div class="container text-center">
+        				<h1 class="display-6 mb-1"><span class="fw-semibold">Limitless</span> - responsive web application kit</h1>
+        				<p class="fs-lg">A powerful, scalable and flexible web application kit. One style, 6 layouts, hundreds of components, thousands of pages and unlimited possibilities!</p>
+
+                        <div class="hstack flex-column flex-sm-row justify-content-sm-center gap-2 gap-sm-3 pt-4">
+                            <a href="demo/template/html/layout_1/full/index.html" class="btn btn-white w-100 w-sm-auto fw-semibold shadow py-2 px-3" target="_blank">
+                                Live preview
+                                <i class="ph-arrow-circle-right ms-2"></i>
+                            </a>
+                            <a href="https://themeforest.net/item/limitless-responsive-web-application-kit/13080328?ref=kopyov" class="btn btn-yellow w-100 w-sm-auto fw-semibold shadow py-2 px-3" target="_blank">
+                                Purchase
+                                <i class="ph-shopping-cart ms-2"></i>
+                            </a>
+                        </div>
+        			</div>
+                </div>
+                <!-- /jumbotron -->
+                
+
+                <!-- Tabs navigation -->
+                <div class="navbar navbar-dark bg-black bg-opacity-10">
+                    <div class="container">
+                        <ul class="nav hstack gap-2 justify-content-center flex-fill">
+                            <li class="nav-item flex-fill">
+                                <a href="#template" class="navbar-nav-link justify-content-center fw-medium rounded active" data-bs-toggle="tab">Template</a>
+                            </li>
+                            <li class="nav-item flex-fill">
+                                <a href="#github" class="navbar-nav-link justify-content-center fw-medium rounded" data-bs-toggle="tab">Github access</a>
+                            </li>
+                            <li class="nav-item flex-fill">
+                                <a href="#hire" class="navbar-nav-link justify-content-center fw-medium rounded" data-bs-toggle="tab">Customization</a>
+                            </li>
+                            <li class="nav-item flex-fill">
+                                <a href="demo/docs/index.html" class="navbar-nav-link justify-content-center fw-medium rounded">Documentation</a>
+                            </li>
+                            <li class="nav-item flex-fill">
+                                <a href="demo/docs/other_changelog.html" class="navbar-nav-link justify-content-center fw-medium rounded">
+                                    Changelog
+                                    <span class="badge bg-black bg-opacity-50 ms-2">v4.0</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- /tabs navigation -->
+
+        	</div>
+            <!-- /hero unit -->
+
+
+            <!-- Tab content -->
+            <div class="tab-content">
+                <div class="tab-pane fade active show" id="template">
+
+                    <!-- Main layout preview -->
+                    <div class="pt-4 mt-2">
+                        <div class="container text-center">
+                            <div class="mb-4">
+                                <h1 class="mb-2">Limitless - <span class="fw-light">main layout preview</span></h1>
+                                <div class="text-muted">Main layout includes a full set of elements, components, extensions, custom pages, widgets, charts and layout options. Child layouts are shells and include only layout related pages, but support all available components from the main layout. SCSS files are well structured so that you can easily find necessary one, whether it's a component or layout.</div>
+                            </div>
+
+                            <div class="d-flex flex-column flex-sm-row justify-content-sm-center flex-wrap gap-1 gap-sm-2 mb-4">
+                                <a href="demo/template/html/layout_1/full/index.html" class="btn btn-light btn-light-theme fw-semibold py-2 px-3" target="_blank">
+                                    <i class="ph-sun me-2"></i>
+                                    Light theme
+                                </a>
+
+                                <a href="demo/template/html/layout_1/full/index.html" class="btn btn-dark btn-dark-theme fw-semibold py-2 px-3" target="_blank">
+                                    <i class="ph-moon me-2"></i>
+                                    Dark theme
+                                </a>
+
+                                <a href="demo/template/html/layout_1/full/index.html" class="btn btn-outline-dark btn-auto-theme fw-semibold py-2 px-3" target="_blank">
+                                    <i class="ph-monitor me-2"></i>
+                                    System theme
+                                </a>
+                            </div>
+
+                            <div class="d-inline-block">
+                                <img src="assets/images/screenshots/layout_main.png" class="img-fluid" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /main layout preview -->
+                    
+
+                    <!-- Project numbers -->
+                    <div class="gradient-8 text-white py-3">
+                        <div class="container text-center">
+                            <div class="row">
+                                <div class="col-6 col-sm-3 my-1">
+                                    <h1 class="fw-medium mb-0">250+</h1>
+                                    components and options
+                                </div>
+                                <div class="col-6 col-sm-3 my-1">
+                                    <h1 class="fw-medium mb-0">500+</h1>
+                                    support tickets resolved
+                                </div>
+                                <div class="col-6 col-sm-3 my-1">
+                                    <h1 class="fw-medium mb-0">72+</h1>
+                                    months of development
+                                </div>
+                                <div class="col-6 col-sm-3 my-1">
+                                    <h1 class="fw-medium mb-0">12000+</h1>
+                                    happy customers
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /project numbers -->
+                    
+
+                    <!-- Child layouts preview -->
+                    <div class="py-4 my-2">
+                        <div class="container">
+                            <div class="text-center mb-4 pb-3">
+                                <h1 class="mb-2">Child <span class="fw-light">layouts preview</span></h1>
+                                <div class="text-muted">Child layouts include only layout related pages, this makes all layouts extremely easy to maintain and new layouts can be developed faster. Although components are not included, all styles exist in CSS files, which means all components and all options from the main layout are supported. You can use all of them in all layouts.</div>
+                            </div>
+                    
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="card card-body">
+                                        <h5 class="mt-1">
+                                            Child <span class="font-weight-light">layout #1</span>
+                                        </h5>
+
+                                        <div class="text-muted mb-3">The most popular modern layout with main light navbar, transparent page header and full height dark sidebar. Logo has 2 options depending on sidebar width.</div>
+
+                                        <div class="d-flex flex-column flex-sm-row flex-wrap gap-1 gap-sm-2">
+                                            <a href="demo/template/html/layout_2/full/index.html" class="btn btn-light btn-light-theme fw-medium mb-1" target="_blank">
+                                                <i class="ph-sun me-2"></i>
+                                                Light
+                                            </a>
+
+                                            <a href="demo/template/html/layout_2/full/index.html" class="btn btn-dark btn-dark-theme fw-medium mb-1" target="_blank">
+                                                <i class="ph-moon me-2"></i>
+                                                Dark
+                                            </a>
+
+                                            <a href="demo/template/html/layout_2/full/index.html" class="btn btn-outline-dark btn-auto-theme fw-medium mb-1" target="_blank">
+                                                <i class="ph-monitor me-2"></i>
+                                                System
+                                            </a>
+                                        </div>
+
+                                        <a href="demo/template/html/layout_2/full/index.html" class="d-block mt-3">
+                                            <img class="img-thumbnail w-100 rounded" src="assets/images/screenshots/layout_2.png" alt="">
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="card card-body">
+                                        <h5 class="mt-1">
+                                            Child <span class="font-weight-light">layout #2</span>
+                                        </h5>
+
+                                        <div class="text-muted mb-3">Layout with full width navbar and page header. Sidebar is a part of content and can be either stretched vertically or displayed as a block element with auto height.</div>
+
+                                        <div class="d-flex flex-column flex-sm-row flex-wrap gap-1 gap-sm-2">
+                                            <a href="demo/template/html/layout_3/full/index.html" class="btn btn-light btn-light-theme fw-medium mb-1" target="_blank">
+                                                <i class="ph-sun me-2"></i>
+                                                Light
+                                            </a>
+
+                                            <a href="demo/template/html/layout_3/full/index.html" class="btn btn-dark btn-dark-theme fw-medium mb-1" target="_blank">
+                                                <i class="ph-moon me-2"></i>
+                                                Dark
+                                            </a>
+
+                                            <a href="demo/template/html/layout_3/full/index.html" class="btn btn-outline-dark btn-auto-theme fw-medium mb-1" target="_blank">
+                                                <i class="ph-monitor me-2"></i>
+                                                System
+                                            </a>
+                                        </div>
+
+                                        <a href="demo/template/html/layout_3/full/index.html" class="d-block mt-3">
+                                            <img class="img-thumbnail w-100 rounded" src="assets/images/screenshots/layout_3.png" alt="">
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="card card-body">
+                                        <h5 class="mt-1">
+                                            Child <span class="font-weight-light">layout #3</span>
+                                        </h5>
+
+                                        <div class="text-muted mb-3">Full width layout with multiple static or fixed navbars and horizontal multi level navigation (single or multiple columns). Sidebar is a part of content and optional.</div>
+
+                                        <div class="d-flex flex-column flex-sm-row flex-wrap gap-1 gap-sm-2">
+                                            <a href="demo/template/html/layout_4/full/index.html" class="btn btn-light btn-light-theme fw-medium mb-1" target="_blank">
+                                                <i class="ph-sun me-2"></i>
+                                                Light
+                                            </a>
+
+                                            <a href="demo/template/html/layout_4/full/index.html" class="btn btn-dark btn-dark-theme fw-medium mb-1" target="_blank">
+                                                <i class="ph-moon me-2"></i>
+                                                Dark
+                                            </a>
+
+                                            <a href="demo/template/html/layout_4/full/index.html" class="btn btn-outline-dark btn-auto-theme fw-medium mb-1" target="_blank">
+                                                <i class="ph-monitor me-2"></i>
+                                                System
+                                            </a>
+                                        </div>
+
+                                        <a href="demo/template/html/layout_4/full/index.html" class="d-block mt-3">
+                                            <img class="img-thumbnail w-100 rounded" src="assets/images/screenshots/layout_4.png" alt="">
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="card card-body">
+                                        <h5 class="mt-1">
+                                            Child <span class="font-weight-light">layout #4</span>
+                                        </h5>
+
+                                        <div class="text-muted mb-3">Layout with multiple navbar and dark page header in between. All top components have the same dark background color, content has extra horizontal spacing.</div>
+
+                                        <div class="d-flex flex-column flex-sm-row flex-wrap gap-1 gap-sm-2">
+                                            <a href="demo/template/html/layout_5/full/index.html" class="btn btn-light btn-light-theme fw-medium mb-1" target="_blank">
+                                                <i class="ph-sun me-2"></i>
+                                                Light
+                                            </a>
+
+                                            <a href="demo/template/html/layout_5/full/index.html" class="btn btn-dark btn-dark-theme fw-medium mb-1" target="_blank">
+                                                <i class="ph-moon me-2"></i>
+                                                Dark
+                                            </a>
+
+                                            <a href="demo/template/html/layout_5/full/index.html" class="btn btn-outline-dark btn-auto-theme fw-medium mb-1" target="_blank">
+                                                <i class="ph-monitor me-2"></i>
+                                                System
+                                            </a>
+                                        </div>
+
+                                        <a href="demo/template/html/layout_5/full/index.html" class="d-block mt-3">
+                                            <img class="img-thumbnail w-100 rounded" src="assets/images/screenshots/layout_5.png" alt="">
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card card-body">
+                                        <h5 class="mt-1">
+                                            Child <span class="font-weight-light">layout #5</span>
+                                        </h5>
+
+                                        <div class="text-muted mb-3">Layout with single navbar, tabbed horizonta navigation and boxed layout. Supports up to 6 columns and is fully responsive.</div>
+
+                                        <div class="d-flex flex-column flex-sm-row flex-wrap gap-1 gap-sm-2">
+                                            <a href="demo/template/html/layout_6/full/index.html" class="btn btn-light btn-light-theme fw-medium mb-1" target="_blank">
+                                                <i class="ph-sun me-2"></i>
+                                                Light
+                                            </a>
+
+                                            <a href="demo/template/html/layout_6/full/index.html" class="btn btn-dark btn-dark-theme fw-medium mb-1" target="_blank">
+                                                <i class="ph-moon me-2"></i>
+                                                Dark
+                                            </a>
+
+                                            <a href="demo/template/html/layout_6/full/index.html" class="btn btn-outline-dark btn-auto-theme fw-medium mb-1" target="_blank">
+                                                <i class="ph-monitor me-2"></i>
+                                                System
+                                            </a>
+                                        </div>
+
+                                        <a href="demo/template/html/layout_6/full/index.html" class="d-block mt-3">
+                                            <img class="img-thumbnail w-100 rounded" src="assets/images/screenshots/layout_6.png" alt="">
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="card card-body">
+                                        <h5 class="mt-1">
+                                            Child <span class="font-weight-light">layout #6</span>
+                                        </h5>
+
+                                        <div class="text-muted mb-3">Clean layout with transparent sidebar and light content area. Simple and elegant, this layout is a mix of classic styling and new modern look and feel.</div>
+
+                                        <div class="d-flex flex-column flex-sm-row flex-wrap gap-1 gap-sm-2">
+                                            <a href="demo/template/html/layout_7/full/index.html" class="btn btn-light btn-light-theme fw-medium mb-1 disabled" target="_blank">
+                                                <i class="ph-sun me-2"></i>
+                                                Light
+                                            </a>
+
+                                            <a href="demo/template/html/layout_7/full/index.html" class="btn btn-dark btn-dark-theme fw-medium mb-1 disabled" target="_blank">
+                                                <i class="ph-moon me-2"></i>
+                                                Dark
+                                            </a>
+
+                                            <a href="demo/template/html/layout_7/full/index.html" class="btn btn-outline-dark btn-auto-theme fw-medium mb-1 disabled" target="_blank">
+                                                <i class="ph-monitor me-2"></i>
+                                                System
+                                            </a>
+                                        </div>
+
+                                        <div class="coming-soon mt-3">
+                                            <img src="assets/images/screenshots/soon.jpg" class="img-thumbnail w-100 rounded">
+                                            <h3 class="opacity-75 mb-0">Coming soon</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /childs layouts preview -->
+                    
+                </div>
+
+                <div class="tab-pane fade" id="github">
+
+                    <!-- Github form -->
+                    <div class="pt-4 mt-2">
+                        <div class="container">
+                            <div class="text-center mb-4">
+                                <h1 class="mb-2">Get an access to <span class="fw-light">Github repository</span></h1>
+                                <div class="text-muted">If you want to submit bug report, track all changes in files, request a new feature, contribute to the project, get latest code and updates before official release or simply participate in discussions, fill in all inputs and request an access to private repository on Github. This service is not automated so kindly expect a minor delay.</div>
+                            </div>
+                    
+                            <div class="d-flex justify-content-center align-items-center pt-1">
+                                <form class="quform w-100 w-sm-auto wmin-sm-400" action="quform/process-github.php" method="post" enctype="multipart/form-data" id="github_form">
+                                    <div class="card mb-5">
+                                        <div class="card-body quform-elements">
+                                            <div class="text-center mb-3">
+                                                <i class="ph-github-logo ph-3x pt-2 mb-3 mt-1"></i>
+                                                <h5 class="mb-0">Limitless repository</h5>
+                                                <div class="text-muted">Request access</div>
+                                            </div>
+                            
+                                            <div class="mb-3">
+                                                <label class="form-label">
+                                                    Github username
+                                                    <span class="text-danger">*</span>
+                                                </label>
+
+                                                <div class="form-control-feedback form-control-feedback-end quform-input">
+                                                    <input type="text" class="form-control" name="github" id="github" placeholder="Enter username">
+                                                    <div class="form-control-feedback-icon">
+                                                        <i class="ph-user"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                            
+                                            <div class="mb-3">
+                                                <label class="form-label">
+                                                    Your email
+                                                    <span class="text-danger">*</span>
+                                                </label>
+
+                                                <div class="form-control-feedback form-control-feedback-end quform-input">
+                                                    <input type="email" class="form-control" name="email" id="email" placeholder="Enter email">
+                                                    <div class="form-control-feedback-icon">
+                                                        <i class="ph-at"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">
+                                                    License code
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                            
+                                                <div class="form-control-feedback form-control-feedback-end quform-input">
+                                                    <input type="text" class="form-control" name="license" id="license" placeholder="Enter code">
+                                                    <div class="form-control-feedback-icon">
+                                                        <i class="ph-key"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="quform-element quform-element-recaptcha">
+                                                <div class="quform-input">
+                                                    <div class="g-recaptcha" data-sitekey="6LdQZeMpAAAAAOIP2N3gxbxsG078D3G0Hn3YooKr" data-size="invisible" data-version="v3"></div>
+                                                    <noscript>Please enable JavaScript to submit this form.</noscript>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <button type="submit" class="btn btn-primary w-100">
+                                                    Send request
+                                                    <i class="ph-paper-plane-tilt ms-2"></i>
+                                                </button>
+                                            </div>
+                                                
+                                            <div class="form-group text-center text-muted content-divider mb-3">
+                                                <span class="px-2">Don't have a license?</span>
+                                            </div>
+                            
+                                            <div>
+                                                <a href="https://themeforest.net/item/limitless-responsive-web-application-kit/13080328?ref=kopyov" class="btn btn-yellow w-100">Purchase</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>                    
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /github form -->
+
+                </div>
+
+                <div class="tab-pane fade" id="hire">
+
+                    <!-- Hire me form -->
+                    <div class="pt-4 mt-2">
+                        <div class="container">
+                            <div class="text-center mb-4">
+                                <h1 class="mb-2">Customization <span class="fw-light">service request</span></h1>
+                                <div class="text-muted">If you need to customize Limitless to match your branding or business needs, nobody knows its code better than developer who has created it. Please fill in the form below or contact me directly to discuss possible cooperation. Please keep in mind that all fields are required. Permanent full time positions are also considered.</div>
+                            </div>
+                    
+                            <div class="d-flex justify-content-center align-items-center pt-1">
+                                <form class="quform w-100 w-sm-auto wmin-sm-400" action="quform/process-customization.php" method="post" id="customization_form" enctype="multipart/form-data">
+                                    <div class="card mb-5">
+                                        <div class="card-body quform-elements">
+                                            <div class="text-center mb-3">
+                                                <i class="ph-swatches ph-3x pt-2 mb-3 mt-1"></i>
+                                                <h5 class="mb-0">Limitless customization</h5>
+                                                <div class="text-muted">Share project details</div>
+                                            </div>
+                            
+                                            <div class="mb-3">
+                                                <label class="form-label">Your name <span class="text-danger">*</span></label>
+                                                <div class="form-control-feedback form-control-feedback-end quform-input">
+                                                    <input type="text" class="form-control" name="custom_name" id="custom_name" placeholder="Enter name">
+                                                    <div class="form-control-feedback-icon">
+                                                        <i class="ph-user"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                            
+                                            <div class="mb-3">
+                                                <label class="form-label">Your email <span class="text-danger">*</span></label>
+                                                <div class="form-control-feedback form-control-feedback-end quform-input">
+                                                    <input type="email" class="form-control" name="custom_email" id="custom_email" placeholder="Enter email">
+                                                    <div class="form-control-feedback-icon">
+                                                        <i class="ph-at"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Start date <span class="text-danger">*</span></label>
+                                                <div class="form-control-feedback form-control-feedback-end quform-input">
+                                                    <input type="date" class="form-control" name="custom_date" id="custom_date" placeholder="Enter date">
+                                                    <div class="form-control-feedback-icon">
+                                                        <i class="ph-calendar-plus"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-3 quform-input">
+                                                <label class="form-label">Budget <span class="text-danger">*</span></label>
+                                                <select class="form-select" name="custom_budget" id="custom_budget">
+                                                    <option value="1">$0 - $100</option>
+                                                    <option value="2">$101 - $500</option>
+                                                    <option value="3">$501 - $1000</option>
+                                                    <option value="4">$1001 - $2000</option>
+                                                    <option value="5">$2001 - $4000</option>
+                                                    <option value="6">$4001+</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="mb-3 quform-input">
+                                                <label class="form-label">Description <span class="text-danger">*</span></label>
+                                                <textarea cols="2" rows="4" class="form-control" name="custom_description" id="custom_description" placeholder="Enter text"></textarea>
+                                            </div>
+
+                                            <div class="quform-element quform-element-recaptcha">
+                                                <div class="quform-input">
+                                                    <div class="g-recaptcha" data-sitekey="6LdQZeMpAAAAAOIP2N3gxbxsG078D3G0Hn3YooKr" data-size="invisible" data-version="v3"></div>
+                                                    <noscript>Please enable JavaScript to submit this form.</noscript>
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <button type="submit" class="btn btn-primary w-100">
+                                                    Send request
+                                                    <i class="ph-paper-plane-tilt ms-2"></i>
+                                                </button>
+                                            </div>                                        
+                                        </div>
+                                    </div>
+                                </form>                    
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /hire me form -->
+
+                </div>
+            </div>
+            <!-- /tab content -->
+
+
+            <!-- Customers list -->
+            <div class="gradient-2 text-white py-4">
+                <div class="container text-center my-3">
+                    <div class="mb-4 pb-3">
+                        <h1 class="mb-2">
+                            <span class="fw-light">Used by over</span>
+                            12000 customers worldwide
+                        </h1>
+                        <span class="opacity-75">Limitless is a popular UI kit used by market leaders in various fields: in own internal and external applications, 3rd party software and subsidiary projects</span>
+                    </div>
+            
+                    <!-- Slideshow -->
+                    <div id="customers" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5500">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <div class="row">
+                                    <div class="col-6 col-sm-4 col-xl-2">
+                                        <img src="assets/images/logos/logo_usps.png" class="opacity-75 mb-4 mb-xl-0" height="30" alt="">
+                                    </div>
+                                    <div class="col-6 col-sm-4 col-xl-2">
+                                        <img src="assets/images/logos/logo_rbs.png" class="opacity-75 mb-4 mb-xl-0" height="30" alt="">
+                                    </div>
+                                    <div class="col-6 col-sm-4 col-xl-2">
+                                        <img src="assets/images/logos/logo_mc.png" class="opacity-75 mb-4 mb-xl-0" height="30" alt="">
+                                    </div>
+                                    <div class="col-6 col-sm-4 col-xl-2">
+                                        <img src="assets/images/logos/logo_mizuho.png" class="opacity-75" height="30" alt="">
+                                    </div>
+                                    <div class="col-6 col-sm-4 col-xl-2">
+                                        <img src="assets/images/logos/logo_sberbank.png" class="opacity-75" height="30" alt="">
+                                    </div>
+                                    <div class="col-6 col-sm-4 col-xl-2">
+                                        <img src="assets/images/logos/logo_ing.png" class="opacity-75" height="30" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="row">
+                                    <div class="col-6 col-sm-4 col-xl-2">
+                                        <img src="assets/images/logos/logo_paypal.png" class="opacity-75 mb-4 mb-xl-0" height="30" alt="">
+                                    </div>
+                                    <div class="col-6 col-sm-4 col-xl-2">
+                                        <img src="assets/images/logos/logo_va.png" class="opacity-75 mb-4 mb-xl-0" height="30" alt="">
+                                    </div>
+                                    <div class="col-6 col-sm-4 col-xl-2">
+                                        <img src="assets/images/logos/logo_anthem.png" class="opacity-75 mb-4 mb-xl-0" height="30" alt="">
+                                    </div>
+                                    <div class="col-6 col-sm-4 col-xl-2">
+                                        <img src="assets/images/logos/logo_kpn.png" class="opacity-75" height="30" alt="">
+                                    </div>
+                                    <div class="col-6 col-sm-4 col-xl-2">
+                                        <img src="assets/images/logos/logo_verizon.png" class="opacity-75" height="30" alt="">
+                                    </div>
+                                    <div class="col-6 col-sm-4 col-xl-2">
+                                        <img src="assets/images/logos/logo_dutch_railways.png" class="opacity-75" height="30" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="row">
+                                    <div class="col-6 col-sm-4 col-xl-2">
+                                        <img src="assets/images/logos/logo_nomura.png" class="opacity-75 mb-4 mb-xl-0" height="30" alt="">
+                                    </div>
+                                    <div class="col-6 col-sm-4 col-xl-2">
+                                        <img src="assets/images/logos/logo_rr.png" class="opacity-75 mb-4 mb-xl-0" height="30" alt="">
+                                    </div>
+                                    <div class="col-6 col-sm-4 col-xl-2">
+                                        <img src="assets/images/logos/logo_merck.png" class="opacity-75 mb-4 mb-xl-0" height="30" alt="">
+                                    </div>
+                                    <div class="col-6 col-sm-4 col-xl-2">
+                                        <img src="assets/images/logos/logo_gamesys.png" class="opacity-75" height="30" alt="">
+                                    </div>
+                                    <div class="col-6 col-sm-4 col-xl-2">
+                                        <img src="assets/images/logos/logo_nissan.png" class="opacity-75" height="30" alt="">
+                                    </div>
+                                    <div class="col-6 col-sm-4 col-xl-2">
+                                        <img src="assets/images/logos/logo_boi.png" class="opacity-75" height="30" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /slideshow -->
+
+                </div>
+            </div>
+            <!-- /customers list -->
+            
+            
+            <!-- Highlights -->
+            <div class="pt-4">
+                <div class="container mt-3">
+                    <div class="text-center mb-5">
+                        <h1 class="mb-2">
+                            <span class="fw-light">Why</span>
+                            Limitless template?
+                        </h1>
+                        <span class="text-muted">Limitless is based on popular Bootstrap framework and includes all default components and more than 200 third party integrated libraries, including full localisation support, starter kit and tons of layout options. Besides perfectly crafted code and pixel perfect design, core Limitless features are:</span>
+                    </div>
+            
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="d-flex mb-5">
+                                <div class="me-3">
+                                    <i class="ph-stack text-primary ph-2x mt-1"></i>
+                                </div>
+            
+                                <div class="flex-fill">
+                                    <h6 class="mb-1">Hundreds of HTML pages</h6>
+                                    Limitless template includes hundreds of static HTML pages, all of them are ready for integration
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex mb-5">
+                                <div class="me-3">
+                                    <i class="ph-brackets-curly text-primary ph-2x mt-1"></i>
+                                </div>
+            
+                                <div class="flex-fill">
+                                    <h6 class="mb-1">Fully based on SCSS</h6>
+                                    Template is fully based on SCSS and CSS variables for advanced theming support
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex mb-5">
+                                <div class="me-3">
+                                    <i class="ph-puzzle-piece text-primary ph-2x mt-1"></i>
+                                </div>
+            
+                                <div class="flex-fill">
+                                    <h6 class="mb-1">Hundreds of components</h6>
+                                    Includes extended BS components, 100+ plugins and extensions and extended layout options
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="d-flex mb-5">
+                                <div class="me-3">
+                                    <i class="ph-chart-line text-primary ph-2x mt-1"></i>
+                                </div>
+            
+                                <div class="flex-fill">
+                                    <h6 class="mb-1">Data visualization</h6>
+                                    Includes ECharts, C3.js, Google charting libraries and advanced native D3.js charts
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex mb-5">
+                                <div class="me-3">
+                                    <i class="ph-translate text-primary ph-2x mt-1"></i>
+                                </div>
+            
+                                <div class="flex-fill">
+                                    <h6 class="mb-1">Translation ready</h6>
+                                    Limitless supports i18next library integration, which allows you to translate your content on-the-fly
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex mb-5">
+                                <div class="me-3">
+                                    <i class="ph-list-plus text-primary ph-2x mt-1"></i>
+                                </div>
+            
+                                <div class="flex-fill">
+                                    <h6 class="mb-1">Multi level navigation</h6>
+                                    Supports collapsible and accordion vertical nav, multi level horizontal nav and mega menu
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="d-flex mb-5">
+                                <div class="me-3">
+                                    <i class="ph-file-text text-primary ph-2x mt-1"></i>
+                                </div>
+            
+                                <div class="flex-fill">
+                                    <h6 class="mb-1">Detailed documentation</h6>
+                                    Comes with very detailed docs and includes options, features and descriptions with screenshots
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex mb-5">
+                                <div class="me-3">
+                                    <i class="ph-note-blank text-primary ph-2x mt-1"></i>
+                                </div>
+            
+                                <div class="flex-fill">
+                                    <h6 class="mb-1">Starter kit</h6>
+                                    Each layout includes a set of blank pages with basic functionality to simplify development process
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex mb-5">
+                                <div class="me-3">
+                                    <i class="ph-layout text-primary ph-2x mt-1"></i>
+                                </div>
+            
+                                <div class="flex-fill">
+                                    <h6 class="mb-1">6 ready-to-use layouts</h6>
+                                    Includes most common layout types, based on responsive grid and supports up to 5 sidebars
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="d-flex mb-5">
+                                <div class="me-3">
+                                    <i class="ph-swatches text-primary ph-2x mt-1"></i>
+                                </div>
+            
+                                <div class="flex-fill">
+                                    <h6 class="mb-1">Color system</h6>
+                                    Includes custom color system with 6 primary and 5 secondary color palettes
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex mb-5">
+                                <div class="me-3">
+                                    <i class="ph-cards text-primary ph-2x mt-1"></i>
+                                </div>
+            
+                                <div class="flex-fill">
+                                    <h6 class="mb-1">Set of custom pages</h6>
+                                    A set of pre-built custom pages: search, galleries, registrations, logins, users, error pages, chats etc.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex mb-5">
+                                <div class="me-3">
+                                    <i class="ph-list text-primary ph-2x mt-1"></i>
+                                </div>
+            
+                                <div class="flex-fill">
+                                    <h6 class="mb-1">Advanced mega menu</h6>
+                                    Supports horizontal navigation with advanced mega menu and extended components
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /highlights -->
+            
+
+            <!-- Footer -->
+            <div class="gradient-6 text-white pt-4">
+                <div class="container text-center pb-4 my-3">
+                    <div class="pb-4">
+                        <h1 class="mb-2">
+                            <span class="fw-light">Join Limitless community.</span>
+                            Once and for a lifetime.
+                        </h1>
+                        <span class="opacity-75">Limitless offers 2 licenses - Regular and Extended. Each license is issued once at the time of purchase and does not require extension. All updates are always free for all existing and new customers. Support is provided under Envato support regulations and does not include customization.</span>
+                    </div>
+            
+                    <a href="https://themeforest.net/item/limitless-responsive-web-application-kit/13080328?ref=kopyov" class="btn btn-yellow btn-lg fw-semibold w-100 p-2 mt-2 shadow"><div class="my-1">Purchase Limitless</div></a>
+                </div>
+
+                <div class="navbar navbar-dark navbar-expand-lg bg-black bg-opacity-10 border-top border-top-white border-opacity-25">
+                    <div class="container">
+                            <span class="navbar-text">
+                                &copy; 2015 - <script>document.write(new Date().getFullYear())</script>. <a href="#">Limitless Web App Kit</a> by <a href="https://themeforest.net/user/Kopyov" target="_blank">Eugene Kopyov</a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /footer -->
+
+		</div>
+		<!-- /main content -->
+
+	</div>
+	<!-- /page content -->
+
+</body>
+</html>
