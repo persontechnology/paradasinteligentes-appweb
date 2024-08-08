@@ -25,6 +25,26 @@ class VehiculoDataTable extends DataTable
             ->addColumn('action', function ($vehiculo){
                 return view('vehiculos.action',['vehiculo'=>$vehiculo])->render();
             })
+            ->editColumn('ubicacion_actual',function($vehiculo){
+                return view('vehiculos.mapa',['vehiculo'=>$vehiculo])->render();
+            })
+            ->editColumn('nombre_conductor', function ($vehiculo) {
+                return $vehiculo->nombre_conductor;
+            })
+            ->editColumn('nombre_ayudante', function ($vehiculo) {
+                return $vehiculo->nombre_ayudante;
+            })
+            ->filterColumn('nombre_conductor', function ($query, $keyword) {
+                $query->whereHas('conductor', function ($q) use ($keyword) {
+                    $q->where('name', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('nombre_ayudante', function ($query, $keyword) {
+                $query->whereHas('ayudante', function ($q) use ($keyword) {
+                    $q->where('name', 'like', "%{$keyword}%");
+                });
+            })
+            ->rawColumns(['action','ubicacion_actual'])
             ->setRowId('id');
     }
 
@@ -60,16 +80,17 @@ class VehiculoDataTable extends DataTable
                   ->width(60)
                   ->title('Acción')
                   ->addClass('text-center'),
-            Column::make('foto'),
-            Column::make('placa'),
+            Column::make('foto')->searchable(false),
+            Column::make('ubicacion_actual')->searchable(false),
             Column::make('codigo')->title('Código'),
+            Column::make('placa'),
             Column::make('marca'),
             Column::make('modelo'),
             Column::make('nombre_cooperativa')->title('Cooperativa'),
             Column::make('descripcion')->searchable(false)->title('Descripción'),
             Column::make('estado'),
-            Column::make('conductor.name')->title('Conductor'),
-            Column::make('ayudante.name')->title('Ayudante'),
+            Column::make('nombre_conductor')->title('Conductor'),
+            Column::make('nombre_ayudante')->title('Ayudante'),
         ];
     }
 

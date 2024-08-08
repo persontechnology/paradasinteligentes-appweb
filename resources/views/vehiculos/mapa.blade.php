@@ -1,0 +1,1 @@
+<a href="{{ $vehiculo->enlaceGoogleMaps() }}" target="_blank">Ver en Google Maps</a>

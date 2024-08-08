@@ -166,6 +166,9 @@
                                                     text: "" + response.message,
                                                     type: "alert"
                                                 }).show();
+                                                
+                                                layer.options.id = response.id;
+                                                layer.options.nombre = response.nombre;
 
                                                 layer.bindPopup(nombre).openPopup();
                                                 drawnItems.addLayer(layer);

@@ -25,6 +25,9 @@ class ParadaAdminController extends Controller
         $parada = Parada::create($validated);
         return response()->json([
             'message'=>'Parada '.$parada->nombre.' ingresado.!',
+            'id'=>$parada->id,
+            'nombre'=>$parada->nombre
+
         ]);
     }
 

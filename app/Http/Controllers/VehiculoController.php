@@ -115,7 +115,7 @@ class VehiculoController extends Controller
         // Actualizar rutas asociadas
         $vehiculo->rutas()->sync($request->rutas);
     
-        return redirect()->route('vehiculos.index')->with('success', 'Vehículo actualizado con éxito.');
+        return redirect()->route('vehiculos.horario',$vehiculo)->with('success', 'Vehículo actualizado con éxito.');
     }
 
     public function horario(Vehiculo $vehiculo)
