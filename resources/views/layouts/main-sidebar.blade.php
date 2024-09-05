@@ -37,7 +37,7 @@
                         <span>Inicio</span>
                     </a>
                 </li>
-
+                
                 <li class="nav-item">
                     <a href="{{ route('paradas.index') }}" class="nav-link {{ Route::is('paradas.*')?'active':'' }}">
                         <i class="ph ph-map-pin"></i>
@@ -51,10 +51,32 @@
                         <span>Rutas</span>
                     </a>
                 </li>
+                
+
                 <li class="nav-item">
                     <a href="{{ route('vehiculos.index') }}" class="nav-link {{ Route::is('vehiculos.*')?'active':'' }}">
                         <i class="ph ph-bus"></i>
                         <span>Vehículos</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('poisicion-vehiculos.index') }}" class="nav-link {{ Route::is('poisicion-vehiculos.*')?'active':'' }}">
+                        <i class="ph ph-map-pin"></i>
+                        <span>Posición de Vehículos</span>
+                    </a>
+                </li>
+                
+
+                <li class="nav-item-header pt-0">
+                    <div class="text-uppercase fs-sm lh-sm opacity-50 sidebar-resize-hide">Sistema</div>
+                    <i class="ph-dots-three sidebar-resize-show"></i>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('configuracion.index') }}" class="nav-link {{ Route::is('configuracion.*')?'active':'' }}">
+                        <i class="ph ph-gear"></i>
+                        <span>Configuración</span>
                     </a>
                 </li>
 

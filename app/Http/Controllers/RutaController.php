@@ -5,15 +5,13 @@ namespace App\Http\Controllers;
 use App\DataTables\RutaDataTable;
 use App\Models\Parada;
 use App\Models\Ruta;
-use App\Models\RutaParada;
-use App\Models\SubRuta;
+use App\Models\TipoRuta;
+use App\Models\Vehiculo;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use PhpParser\Builder\Param;
 
 class RutaController extends Controller
 {
-    
+
     public function index(RutaDataTable $rutaDataTable)
     {
         return $rutaDataTable->render('rutas.index');
@@ -22,111 +20,224 @@ class RutaController extends Controller
     public function create()
     {
         $data = array(
-            'paradas'=>Parada::get(),
-            'paradas_activas'=>Parada::contarActivos(),
-            'paradas_inactivas'=>Parada::contarInactivos(),
+            'paradas' => Parada::all(),
+            'vehiculos' => Vehiculo::all()
         );
-        
-        return view('rutas.create',$data);
+
+        return view('rutas.create', $data);
     }
 
-   
     public function store(Request $request)
     {
-        // Validar los datos entrantes
         $request->validate([
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'nullable|string',
+            'nombre_ruta' => 'required|string|max:255|unique:rutas,nombre',
+            'vehiculos' => 'nullable|array',
+            'vehiculos.*' => 'exists:vehiculos,id',
+            'ida_inicio' => 'required|date_format:H:i',
+            'ida_finaliza' => 'required|date_format:H:i|after:ida_inicio',
+            'ida_tiempo_total' => 'required|string|max:50',
+            'retorno_inicio' => 'required|date_format:H:i',
+            'retorno_finaliza' => 'required|date_format:H:i|after:retorno_inicio',
+            'retorno_tiempo_total' => 'required|string|max:50',
             'estado' => 'required|in:ACTIVO,INACTIVO',
-            'subrutas' => 'required|json'
+            'paradas_ida' => 'required|array',
+            'paradas_ida.*' => 'exists:paradas,id',
+            'paradas_retorno' => 'required|array',
+            'paradas_retorno.*' => 'exists:paradas,id',
+            'detalle_recorrido_ida' => 'required|string',
+            'detalle_recorrido_retorno' => 'required|string',
+            'distancia_total' => 'required|string|max:255',
+            'tiempo_total_ruta' => 'required|string|max:255',
+            'dias_activos' => 'required|array|min:1', // Asegura que se seleccionen al menos un día
+            'dias_activos.*' => 'in:lunes,martes,miércoles,jueves,viernes,sábado,domingo',
         ]);
-        
+
         // Crear la ruta
-        $ruta = Ruta::create($request->only(['nombre', 'descripcion', 'estado']));
+        $ruta = Ruta::create([
+            'nombre' => $request->nombre_ruta,
+            'estado' => $request->estado,
+            'distancia_total' => $request->distancia_total,
+            'tiempo_total_ruta' => $request->tiempo_total_ruta,
+        ]);
 
-        // Decodificar subrutas del JSON
-        $subrutasData = json_decode($request->input('subrutas'), true);
-
-        // Almacenar cada subruta
-        foreach ($subrutasData as $subruta) {
-            
-            
-            SubRuta::create([
-                'ruta_id' => $ruta->id,
-                'parada_inicio_id' => $subruta['parada_inicio_id'],
-                'parada_final_id' => $subruta['parada_final_id'],
-                'tiempo_recorrido' => $subruta['tiempo_recorrido'],
-                'coordenadas' => json_encode($subruta['coordenadas'])
-            ]);
+        // Asignar vehículos a la ruta con días activos
+        // $ruta->vehiculos()->sync($request->vehiculos);
+        if ($request->vehiculos) {
+            $vehiculosData = [];
+            foreach ($request->vehiculos as $vehiculoId) {
+                $vehiculosData[$vehiculoId] = [
+                    'dias_activos' => json_encode($request->dias_activos,JSON_UNESCAPED_UNICODE),
+                ];
+            }
+            $ruta->vehiculos()->sync($vehiculosData);
         }
 
-        return redirect()->route('rutas.index')->with('success', 'Ruta creada exitosamente.');
+        // Crear TipoRuta para la ida
+        $tipoRutaIda = TipoRuta::create([
+            'tipo' => 'IDA',
+            'ruta_id' => $ruta->id,
+            'inicio' => $request->ida_inicio,
+            'finaliza' => $request->ida_finaliza,
+            'tiempo_total' => $request->ida_tiempo_total,
+            'detalle_recorrido' => $request->detalle_recorrido_ida
+
+        ]);
+
+        // Asignar paradas a la TipoRuta (ida)
+        $tipoRutaIda->paradas()->sync($this->prepareRecorridoData($request->paradas_ida));
+        
+        // Crear TipoRuta para el retorno
+        $tipoRutaRetorno = TipoRuta::create([
+            'tipo' => 'RETORNO',
+            'ruta_id' => $ruta->id,
+            'inicio' => $request->retorno_inicio,
+            'finaliza' => $request->retorno_finaliza,
+            'tiempo_total' => $request->retorno_tiempo_total,
+            'detalle_recorrido' => $request->detalle_recorrido_retorno
+
+        ]);
+
+        // Asignar paradas a la TipoRuta (retorno)
+        $tipoRutaRetorno->paradas()->sync($this->prepareRecorridoData($request->paradas_retorno));
+
+        return redirect()->route('rutas.show',$ruta->id)->with('success', 'Ruta creada con éxito.');
     }
+
+
+
+    private function prepareRecorridoData($paradas)
+    {
+        $data = [];
+        foreach ($paradas as $index => $paradaId) {
+            $data[$paradaId] = ['orden' => $index + 1];
+        }
+        return $data;
+    }
+
+
+
     public function show(Ruta $ruta)
     {
-        return $ruta;
-    }
+        $paradasIda = array();
+        foreach ($ruta->tipoRutaIda->recorridos as $ri) {
+            $ri->parada['orden']=$ri->orden;
+            array_push($paradasIda, $ri->parada);
+        }
 
-  
-    public function edit(Ruta $ruta)
-    {
         
-       $subrutas = $ruta->subRutas()->with(['paradaInicio', 'paradaFinal'])->get()->map(function($subruta) {
-            $subruta->coordenadas = json_decode($subruta->coordenadas, true);
-            return $subruta;
-        });
+
+        $paradasRetorno = array();
+        foreach ($ruta->tipoRutaRetorno->recorridos as $re) {
+            $re->parada['orden']=$re->orden;
+            array_push($paradasRetorno, $re->parada);
+        }
+        
+        // Decodificar coordenadas JSON si existen
+         $coordenadasIdas = $ruta->tipoRutaIda->coordenadas ? json_decode($ruta->tipoRutaIda->coordenadas) : [];
+         $coordenadasRetorno = $ruta->tipoRutaRetorno->coordenadas ? json_decode($ruta->tipoRutaRetorno->coordenadas) : [];
 
         $data = array(
-            'ruta'=>$ruta,
-            'paradas'=>Parada::all(),
-            'subrutas'=>$subrutas,
-            'paradas_activas'=>Parada::contarActivos(),
-            'paradas_inactivas'=>Parada::contarInactivos(),
+            'ruta' => $ruta,
+            'paradasIda' => $paradasIda,
+            'paradasRetorno' => $paradasRetorno,
+            'coordenadasIdas' => $coordenadasIdas,
+            'coordenadasRetorno' => $coordenadasRetorno,
         );
-        return view('rutas.edit',$data);   
+
+        return view('rutas.show', $data);
     }
 
-    public function update(Request $request, Ruta $ruta)
+
+
+
+    public function edit($id)
     {
-        // Validar los datos entrantes
+        $ruta = Ruta::findOrFail($id);
+        $vehiculos = Vehiculo::all();
+        $paradas = Parada::all();
+        
+        // Filtrando paradas para ida y retorno
+        $tipoRutaIda = $ruta->tipoRutaIda;
+        $tipoRutaRetorno = $ruta->tipoRutaRetorno;
+
+        $paradasIda = $tipoRutaIda ? $tipoRutaIda->paradas()->orderBy('pivot_orden')->get() : collect();
+        $paradasRetorno = $tipoRutaRetorno ? $tipoRutaRetorno->paradas()->orderBy('pivot_orden')->get() : collect();
+
+        return view('rutas.edit', compact('ruta', 'vehiculos', 'paradas', 'paradasIda', 'paradasRetorno', 'tipoRutaIda', 'tipoRutaRetorno'));
+    }
+
+    public function update(Request $request, $id)
+    {
         $request->validate([
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'nullable|string',
+            'nombre_ruta' => 'required|string|max:255|unique:rutas,nombre,'.$id,
+            'vehiculos' => 'nullable|array',
+            'vehiculos.*' => 'exists:vehiculos,id',
+            'ida_inicio' => 'required|date_format:H:i',
+            'ida_finaliza' => 'required|date_format:H:i|after:ida_inicio',
+            'ida_tiempo_total' => 'required|string|max:50',
+            'retorno_inicio' => 'required|date_format:H:i',
+            'retorno_finaliza' => 'required|date_format:H:i|after:retorno_inicio',
+            'retorno_tiempo_total' => 'required|string|max:50',
             'estado' => 'required|in:ACTIVO,INACTIVO',
-            'subrutas' => 'required|json'
+            'paradas_ida' => 'required|array',
+            'paradas_ida.*' => 'exists:paradas,id',
+            'paradas_retorno' => 'required|array',
+            'paradas_retorno.*' => 'exists:paradas,id',
+            'detalle_recorrido_ida' => 'required|string',
+            'detalle_recorrido_retorno' => 'required|string',
+            'distancia_total' => 'required|string|max:255',
+            'tiempo_total_ruta' => 'required|string|max:255',
+            'dias_activos' => 'required|array|min:1', // Asegura que se seleccionen al menos un día
+            'dias_activos.*' => 'in:lunes,martes,miércoles,jueves,viernes,sábado,domingo', 
         ]);
 
-        
-        try {
-            DB::beginTransaction();
-            // Actualizar la ruta
-            $ruta->update($request->only(['nombre', 'descripcion', 'estado']));
+        // Actualizar la ruta
+        $ruta = Ruta::findOrFail($id);
+        $ruta->update([
+            'nombre' => $request->nombre_ruta,
+            'estado' => $request->estado,
+            'distancia_total' => $request->distancia_total,
+            'tiempo_total_ruta' => $request->tiempo_total_ruta,
+        ]);
 
-            // Eliminar las subrutas existentes
-            $ruta->subRutas()->delete();
-
-            // Decodificar subrutas del JSON
-             $subrutasData = json_decode($request->input('subrutas'), true);
-
-            // Almacenar cada subruta
-            foreach ($subrutasData as $subruta) {
-                SubRuta::create([
-                    'ruta_id' => $ruta->id,
-                    'parada_inicio_id' => $subruta['parada_inicio_id'],
-                    'parada_final_id' => $subruta['parada_final_id'],
-                    'tiempo_recorrido' => $subruta['tiempo_recorrido'],
-                    'coordenadas' => json_encode($subruta['coordenadas'])
-                ]);
+        // Actualizar vehículos
+       // Actualizar vehículos con días activos
+        if ($request->vehiculos) {
+            $vehiculosData = [];
+            foreach ($request->vehiculos as $vehiculoId) {
+                $vehiculosData[$vehiculoId] = [
+                    'dias_activos' => json_encode($request->dias_activos,JSON_UNESCAPED_UNICODE),
+                ];
             }
-            DB::commit();
-            return redirect()->route('rutas.index')->with('success', 'Ruta actualizada exitosamente.');
-            
-        } catch (\Throwable $th) {
-            DB::rollback();
-            return redirect()->route('rutas.index')->with('error', 'Ruta no actualizada.'.$th->getMessage());
+            $ruta->vehiculos()->sync($vehiculosData);
         }
-    }
 
+        // Actualizar TipoRuta para la ida
+        $tipoRutaIda = $ruta->tipoRutaIda;
+        if ($tipoRutaIda) {
+            $tipoRutaIda->update([
+                'inicio' => $request->ida_inicio,
+                'finaliza' => $request->ida_finaliza,
+                'tiempo_total' => $request->ida_tiempo_total,
+                'detalle_recorrido' => $request->detalle_recorrido_ida,
+            ]);
+            $tipoRutaIda->paradas()->sync($this->prepareRecorridoData($request->paradas_ida));
+        }
+
+        // Actualizar TipoRuta para el retorno
+        $tipoRutaRetorno = $ruta->tipoRutaRetorno;
+        if ($tipoRutaRetorno) {
+            $tipoRutaRetorno->update([
+                'inicio' => $request->retorno_inicio,
+                'finaliza' => $request->retorno_finaliza,
+                'tiempo_total' => $request->retorno_tiempo_total,
+                'detalle_recorrido' => $request->detalle_recorrido_retorno,
+            ]);
+            $tipoRutaRetorno->paradas()->sync($this->prepareRecorridoData($request->paradas_retorno));
+        }
+
+        return redirect()->route('rutas.index')->with('success', 'Ruta actualizada con éxito.');
+    }
 
 
     /**
@@ -136,25 +247,36 @@ class RutaController extends Controller
     {
         try {
             $ruta->delete();
-            return redirect()->route('rutas.index')->with('success','Ruta eliminado');
+            return redirect()->route('rutas.index')->with('success', 'Ruta eliminado');
         } catch (\Throwable $th) {
-            return redirect()->route('rutas.index')->with('success','Ruta no eliminado.'.$th->getMessage());
+            return redirect()->route('rutas.index')->with('success', 'Ruta no eliminado.' . $th->getMessage());
         }
     }
 
-    
-    public function eliminarSubRuta($id)
+
+    public function actualizarCoordenadas(Request $request, Ruta $ruta)
     {
-        $subruta = Subruta::find($id);
-
-        if (!$subruta) {
-            return response()->json(['message' => 'Subruta no encontrada.'], 404);
+        // Validar que se reciban arrays
+        $request->validate([
+            'coordenadasIda' => 'nullable|array',
+            'coordenadasRetorno' => 'nullable|array',
+        ]);
+        
+        // Guardar las coordenadas de ida si se proporcionaron
+        if ($request->has('coordenadasIda')) {
+            $ruta->tipoRutaIda->coordenadas = json_encode($request->coordenadasIda);
+            $ruta->tipoRutaIda->save();
+            
         }
 
-        $subruta->delete();
-
-        return response()->json(['message' => 'Subruta eliminada correctamente.'], 200);
+        // Guardar las coordenadas de retorno si se proporcionaron
+        if ($request->has('coordenadasRetorno')) {
+            $ruta->tipoRutaRetorno->coordenadas = json_encode($request->coordenadasRetorno);
+            $ruta->tipoRutaRetorno->save();
+            
+        }
+        
+        return response()->json(['message' => 'Coordenadas actualizadas correctamente']);
     }
 
-   
 }

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SubRuta;
+use App\Models\Recorrido;
 use Illuminate\Http\Request;
 
-class SubRutaController extends Controller
+class RecorridoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class SubRutaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(SubRuta $subRuta)
+    public function show(Recorrido $recorrido)
     {
         //
     }
@@ -42,7 +42,7 @@ class SubRutaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(SubRuta $subRuta)
+    public function edit(Recorrido $recorrido)
     {
         //
     }
@@ -50,7 +50,7 @@ class SubRutaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, SubRuta $subRuta)
+    public function update(Request $request, Recorrido $recorrido)
     {
         //
     }
@@ -58,7 +58,7 @@ class SubRutaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(SubRuta $subRuta)
+    public function destroy(Recorrido $recorrido)
     {
         //
     }

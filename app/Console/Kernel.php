@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Schedulers\VehiculosScheduler;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -12,7 +13,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // llamar a VehiculosSheduler para ejecutra commando para obtener vehculos y actualizar ubicacion
+        // Llama al método schedule de VehiculosScheduler
+        $vehiculosScheduler = new VehiculosScheduler();
+        $vehiculosScheduler->schedule($schedule);
     }
 
     /**

@@ -29,7 +29,10 @@ class ParadaDatableDataTable extends DataTable
             ->editColumn('estado',function($parada){
                 return view('paradas.estado',['parada'=>$parada])->render();
             })
-            ->rawColumns(['estado','latitud'])
+            ->editColumn('nombre',function($parada){
+                return view('paradas.nombre',['parada'=>$parada])->render();
+            })
+            ->rawColumns(['estado','latitud','nombre'])
             ->setRowId('id');
     }
 

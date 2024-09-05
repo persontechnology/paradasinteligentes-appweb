@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('nombre');
-            $table->text('descripcion')->nullable();
             $table->enum('estado', ['ACTIVO', 'INACTIVO'])->default('ACTIVO');
+            $table->string('distancia_total')->nullable();
+            $table->string('tiempo_total_ruta')->nullable();
             
         });
     }

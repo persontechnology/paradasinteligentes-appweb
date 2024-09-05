@@ -61,8 +61,9 @@ class RutaDataTable extends DataTable
                   ->title('Acción')
                   ->addClass('text-center'),
             Column::make('nombre'),
-            Column::make('descripcion')->title('Descripción'),
             Column::make('estado'),
+            Column::make('distancia_total'),
+            Column::make('tiempo_total_ruta'),
         ];
     }
 

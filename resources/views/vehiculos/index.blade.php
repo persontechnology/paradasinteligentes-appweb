@@ -13,6 +13,33 @@
 			Nuevo
 		</a>
 
+        <div class="dropdown ms-lg-3">
+			<a href="#" class="d-flex align-items-center text-body dropdown-toggle py-2" data-bs-toggle="dropdown">
+				<i class="ph-gear me-1"></i>
+				<span class="flex-1"></span>
+			</a>
+
+			<div class="dropdown-menu dropdown-menu-end w-100 w-lg-auto">
+				<a href="{{ route('vehiculos.veren.mapa') }}" class="dropdown-item">
+                    <i class="ph ph-map-pin me-2"></i>
+					Ver en mapa tiempo real
+				</a>
+				<a href="#" class="dropdown-item">
+					<i class="ph-chart-bar me-2"></i>
+					Analytics
+				</a>
+				<a href="#" class="dropdown-item">
+					<i class="ph-lock-key me-2"></i>
+					Privacy
+				</a>
+				<div class="dropdown-divider"></div>
+				<a href="#" class="dropdown-item">
+					<i class="ph-gear me-2"></i>
+					All settings
+				</a>
+			</div>
+		</div>
+
 	</div>
 </div>
 @endsection

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('codigo');
+            $table->integer('numero_linea')->nullable();
             $table->string('placa')->nullable();
             $table->string('marca')->nullable();
             $table->string('modelo')->nullable();
@@ -22,6 +23,7 @@ return new class extends Migration
             $table->string('foto')->nullable();
             $table->string('descripcion')->nullable();
             $table->enum('estado',['ACTIVO','INACTIVO'])->nullable();
+            $table->string('velocidad')->nullable();
             $table->json('ubicacion_actual')->nullable(); 
             $table->foreignId('coductor_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->foreignId('ayudante_id')->nullable()->constrained('users')->onDelete('cascade');

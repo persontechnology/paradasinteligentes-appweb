@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\RutaParada;
+use App\Models\RutaVehiculo;
 use Illuminate\Http\Request;
 
-class RutaParadaController extends Controller
+class RutaVehiculoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class RutaParadaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(RutaParada $rutaParada)
+    public function show(RutaVehiculo $rutaVehiculo)
     {
         //
     }
@@ -42,7 +42,7 @@ class RutaParadaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(RutaParada $rutaParada)
+    public function edit(RutaVehiculo $rutaVehiculo)
     {
         //
     }
@@ -50,7 +50,7 @@ class RutaParadaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, RutaParada $rutaParada)
+    public function update(Request $request, RutaVehiculo $rutaVehiculo)
     {
         //
     }
@@ -58,7 +58,7 @@ class RutaParadaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(RutaParada $rutaParada)
+    public function destroy(RutaVehiculo $rutaVehiculo)
     {
         //
     }

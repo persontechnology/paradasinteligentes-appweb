@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\VehiculoRuta;
+use App\Models\TipoRuta;
 use Illuminate\Http\Request;
 
-class VehiculoRutaController extends Controller
+class TipoRutaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class VehiculoRutaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(VehiculoRuta $vehiculoRuta)
+    public function show(TipoRuta $tipoRuta)
     {
         //
     }
@@ -42,7 +42,7 @@ class VehiculoRutaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(VehiculoRuta $vehiculoRuta)
+    public function edit(TipoRuta $tipoRuta)
     {
         //
     }
@@ -50,7 +50,7 @@ class VehiculoRutaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, VehiculoRuta $vehiculoRuta)
+    public function update(Request $request, TipoRuta $tipoRuta)
     {
         //
     }
@@ -58,7 +58,7 @@ class VehiculoRutaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(VehiculoRuta $vehiculoRuta)
+    public function destroy(TipoRuta $tipoRuta)
     {
         //
     }

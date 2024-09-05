@@ -10,13 +10,16 @@
     <div class="card-header">
         <h1>Actualizar Días Activos de Rutas para el Vehículo</h1>
         <div class="row">
-            <div class="col-lg-4">
+            <div class="col-lg-3">
+                <p><strong>Código:</strong> {{ $vehiculo->codigo }}</p>
+            </div>
+            <div class="col-lg-3">
                 <p><strong>Placa:</strong> {{ $vehiculo->placa }}</p>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-3">
                 <p><strong>Marca:</strong> {{ $vehiculo->marca }}</p>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-3">
                 <p><strong>Modelo:</strong> {{ $vehiculo->modelo }}</p>
             </div>
         </div>
@@ -27,6 +30,7 @@
             @csrf
             @method('put')
             @foreach ($vehiculo->rutas as $ruta)
+            
                 <div class="card">
                     <div class="card-body">
                         <h3>{{ $ruta->nombre }}</h3>
@@ -48,7 +52,7 @@
                                 <label class="form-check-label" for="martes-{{ $ruta->id }}">Martes</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input type="checkbox" class="form-check-input" name="dias_activos[{{ $ruta->id }}][]" value="miercoles" id="miercoles-{{ $ruta->id }}" {{ in_array('miercoles', $diasActivos) ? 'checked' : '' }}>
+                                <input type="checkbox" class="form-check-input" name="dias_activos[{{ $ruta->id }}][]" value="miércoles" id="miercoles-{{ $ruta->id }}" {{ in_array('miércoles', $diasActivos) ? 'checked' : '' }}>
                                 <label class="form-check-label" for="miercoles-{{ $ruta->id }}">Miércoles</label>
                             </div>
                             <div class="form-check form-check-inline">
@@ -60,7 +64,7 @@
                                 <label class="form-check-label" for="viernes-{{ $ruta->id }}">Viernes</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input type="checkbox" class="form-check-input" name="dias_activos[{{ $ruta->id }}][]" value="sabado" id="sabado-{{ $ruta->id }}" {{ in_array('sabado', $diasActivos) ? 'checked' : '' }}>
+                                <input type="checkbox" class="form-check-input" name="dias_activos[{{ $ruta->id }}][]" value="sábado" id="sabado-{{ $ruta->id }}" {{ in_array('sábado', $diasActivos) ? 'checked' : '' }}>
                                 <label class="form-check-label" for="sabado-{{ $ruta->id }}">Sábado</label>
                             </div>
                             <div class="form-check form-check-inline">

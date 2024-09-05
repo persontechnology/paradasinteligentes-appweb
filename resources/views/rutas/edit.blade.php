@@ -5,503 +5,315 @@
 @endsection
 
 @section('content')
-    <form action="{{ route('rutas.update', $ruta->id) }}" method="POST" onsubmit="actualizarInputSubrutas()">
-        @csrf
-        @method('PUT')
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-lg-12 mb-2">
-                        <div class="form-floating form-control-feedback form-control-feedback-start">
-                            <div class="form-control-feedback-icon">
-                                <i class="ph ph-file-vue"></i>
-                            </div>
-                            <input type="text" name="nombre" value="{{ old('nombre', $ruta->nombre) }}"
-                                class="form-control @error('nombre') is-invalid @enderror" placeholder="Nombre de ruta"
-                                required autofocus>
-                            <label>Nombre de ruta<i class="text-danger">*</i></label>
-                            @error('nombre')
-                                <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="col-lg-12 mb-2">
-                        <div class="form-floating form-control-feedback form-control-feedback-start">
-                            <div class="form-control-feedback-icon">
-                                <i class="ph ph-article"></i>
-                            </div>
-                            <textarea name="descripcion" class="form-control @error('descripcion') is-invalid @enderror" placeholder="Descripción"
-                                style="height: 100px;">{{ old('descripcion', $ruta->descripcion) }}</textarea>
-                            <label>Descripción</label>
-                            @error('descripcion')
-                                <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="col-lg-12 mb-2">
-                        <div class="form-floating form-control-feedback form-control-feedback-start">
-                            <div class="form-control-feedback-icon">
-                                <i class="ph ph-toggle-left"></i>
-                            </div>
-                            <select class="form-select @error('estado') is-invalid @enderror" name="estado">
-                                <option value="ACTIVO" {{ old('estado', $ruta->estado) == 'ACTIVO' ? 'selected' : '' }}>
-                                    ACTIVO</option>
-                                <option value="INACTIVO" {{ old('estado', $ruta->estado) == 'INACTIVO' ? 'selected' : '' }}>
-                                    INACTIVO</option>
-                            </select>
-                            <label>Estado</label>
-                            @error('estado')
-                                <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="mb-1">
-                        <p>Dibujar ruta</p>
-                        <span class="badge bg-primary">{{ $paradas_activas }} ACTIVOS</span>
-                        <span class="badge bg-danger">{{ $paradas_inactivas }} INACTIVOS</span>
-                    </div>
-                    <div class="col-lg-12 mb-2">
-                        <select class="form-control select" data-placeholder="Buscar paradas..." onchange="buscarParada(this);">
-                            <option></option>
-                            @foreach ($paradas as $parada)
-                            <option value="{{ $parada->id }}">{{ $parada->nombre }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div id="map"></div>
-                    {{-- Input oculto para subrutas --}}
-                    <input type="hidden" name="subrutas" id="subrutas-input" value="{{ old('subrutas', json_encode($subrutas)) }}">
-
-                    <div class="info">
-                        <p>Parada Inicial: <span id="parada-inicial">Ninguna</span></p>
-                        <p>Parada Final: <span id="parada-final">Ninguna</span></p>
-                        <p>Tiempo de Recorrido (minutos): <span id="tiempo-recorrido">N/A</span></p>
+<form action="{{ route('rutas.update', $ruta->id) }}" method="post" id="formValidate">
+    @csrf
+    @method('PUT')
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <!-- Nombre de la Ruta -->
+                <div class="col-lg-12 mb-2">
+                    <div class="form-floating">
+                        <input type="text" name="nombre_ruta" class="form-control @error('nombre_ruta') is-invalid @enderror" placeholder="Nombre de la ruta" value="{{ old('nombre_ruta', $ruta->nombre) }}" required autofocus>
+                        <label for="nombre_ruta">Nombre de la Ruta</label>
+                        @error('nombre_ruta')
+                            <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        @enderror
                     </div>
                 </div>
             </div>
-            <div class="card-footer">
-                <button type="submit" class="btn btn-primary">Actualizar</button>
+            
+            <div class="row">
+                <!-- Ida de Ruta -->
+                <div class="col-lg-4 mb-2">
+                    <div class="border p-3">
+                        <h6 class="text-center">IDA DE RUTA:</h6>
+                        <div class="mb-2">
+                            <label class="form-label">Inicia</label>
+                            <input type="time" name="ida_inicio" class="form-control @error('ida_inicio') is-invalid @enderror" value="{{ old('ida_inicio', $tipoRutaIda->inicio) }}" required>
+                            @error('ida_inicio')
+                                <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                            @enderror
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Finaliza</label>
+                            <input type="time" name="ida_finaliza" class="form-control @error('ida_finaliza') is-invalid @enderror" value="{{ old('ida_finaliza', $tipoRutaIda->finaliza) }}" required>
+                            @error('ida_finaliza')
+                                <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                            @enderror
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Tiempo Total</label>
+                            <input type="text" name="ida_tiempo_total" class="form-control @error('ida_tiempo_total') is-invalid @enderror" value="{{ old('ida_tiempo_total', $tipoRutaIda->tiempo_total) }}" required>
+                            @error('ida_tiempo_total')
+                                <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Retorno de Ruta -->
+                <div class="col-lg-4 mb-2">
+                    <div class="border p-3">
+                        <h6 class="text-center">RETORNO DE RUTA:</h6>
+                        <div class="mb-2">
+                            <label class="form-label">Inicia</label>
+                            <input type="time" name="retorno_inicio" class="form-control @error('retorno_inicio') is-invalid @enderror" value="{{ old('retorno_inicio', $tipoRutaRetorno->inicio) }}" required>
+                            @error('retorno_inicio')
+                                <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                            @enderror
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Finaliza</label>
+                            <input type="time" name="retorno_finaliza" class="form-control @error('retorno_finaliza') is-invalid @enderror" value="{{ old('retorno_finaliza', $tipoRutaRetorno->finaliza) }}" required>
+                            @error('retorno_finaliza')
+                                <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                            @enderror
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Tiempo Total</label>
+                            <input type="text" name="retorno_tiempo_total" class="form-control @error('retorno_tiempo_total') is-invalid @enderror" value="{{ old('retorno_tiempo_total', $tipoRutaRetorno->tiempo_total) }}" required>
+                            @error('retorno_tiempo_total')
+                                <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Distancia Total -->
+                <div class="col-lg-4 mb-2">
+                    <div class="border p-3">
+                        <h6 class="text-center">DISTANCIA TOTAL:</h6>
+                        <div class="mb-2">
+                            <label class="form-label">Distancia</label>
+                            <input type="text" name="distancia_total" class="form-control @error('distancia_total') is-invalid @enderror" value="{{ old('distancia_total', $ruta->distancia_total) }}" required>
+                            @error('distancia_total')
+                                <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                            @enderror
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Tiempo Total de Ruta</label>
+                            <input type="text" name="tiempo_total_ruta" class="form-control @error('tiempo_total_ruta') is-invalid @enderror" value="{{ old('tiempo_total_ruta', $ruta->tiempo_total_ruta) }}" required>
+                            @error('tiempo_total_ruta')
+                                <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                            @enderror
+                        </div>
+                        <div class="mb-2">
+                            <div class="form-floating form-control-feedback form-control-feedback-start ">
+                                <div class="form-control-feedback-icon">
+                                    <i class="ph ph-toggle-left"></i>
+                                </div>
+                                <select class="form-select @error('estado') is-invalid @enderror" name="estado" required>
+                                    <option value="ACTIVO" {{ old('estado', $ruta->estado) == 'ACTIVO' ? 'selected' : '' }}>ACTIVO</option>
+                                    <option value="INACTIVO" {{ old('estado', $ruta->estado) == 'INACTIVO' ? 'selected' : '' }}>INACTIVO</option>
+                                </select>
+                                <label>Estado</label>
+                                @error('estado')
+                                    <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="col-lg-12 mb-2">
+                    <label for="vehiculos">Seleccione vehículos</label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="ph ph-car-simple"></i>
+                        </span>
+                        <select name="vehiculos[]" class="form-select @error('vehiculos') is-invalid @enderror" id="vehiculos" multiple="multiple" data-include-select-all-option="true" data-enable-filtering="true" data-enable-case-insensitive-filtering="true" required>
+                            @foreach ($vehiculos as $ve)
+                                <option value="{{ $ve->id }}" {{ (collect(old('vehiculos', $ruta->vehiculos->pluck('id')->toArray()))->contains($ve->id)) ? 'selected' : '' }}>
+                                    {{ $ve->numero_linea }} {{ $ve->numero_linea ? '-' : '' }} {{ $ve->codigo }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('vehiculos')
+                            <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="col-lg-12 mb-2">
+                    <div class="border p-2">
+                        <strong>Detalle de Ida:</strong>
+                        <textarea name="detalle_recorrido_ida" class="form-control @error('detalle_recorrido_ida') is-invalid @enderror" rows="4" required>{{ old('detalle_recorrido_ida', $tipoRutaIda->detalle_recorrido) }}</textarea>
+                        @error('detalle_recorrido_ida')
+                            <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        @enderror
+                        <label for="select_paradas_ida"><strong>Ruta:</strong> Seleccione las paradas</label>
+                        <select multiple class="form-control @error('paradas_ida') is-invalid @enderror" name="paradas_ida[]" id="select_paradas_ida" required>
+                            @if(old('paradas_ida'))
+                                @foreach (old('paradas_ida') as $paradaId)
+                                    @php
+                                        $parada = $paradas->where('id', $paradaId)->first();
+                                    @endphp
+                                    @if($parada)
+                                        <option value="{{ $parada->id }}" selected>{{ $parada->nombre }}</option>
+                                    @endif
+                                @endforeach
+                            @else
+                                @foreach ($paradasIda as $parada)
+                                    <option value="{{ $parada->id }}" selected>{{ $parada->nombre }}</option>
+                                @endforeach
+                            @endif
+                            @foreach ($paradas as $parada)
+                                @if (!collect(old('paradas_ida', $paradasIda->pluck('id')->toArray()))->contains($parada->id))
+                                    <option value="{{ $parada->id }}">{{ $parada->nombre }}</option>
+                                @endif
+                            @endforeach
+                        </select>
+                        @error('paradas_ida')
+                            <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="col-lg-12 mb-2">
+                    <div class="border p-2">
+                        <strong>Detalle de Retorno:</strong>
+                        <textarea name="detalle_recorrido_retorno" class="form-control @error('detalle_recorrido_retorno') is-invalid @enderror" rows="4" required>{{ old('detalle_recorrido_retorno', $tipoRutaRetorno->detalle_recorrido) }}</textarea>
+                        @error('detalle_recorrido_retorno')
+                            <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        @enderror
+                        <label for="select_paradas_retorno"><strong>Ruta:</strong> Seleccione las paradas</label>
+                        <select multiple class="form-control @error('paradas_retorno') is-invalid @enderror" name="paradas_retorno[]" id="select_paradas_retorno" required>
+                            @if(old('paradas_retorno'))
+                                @foreach (old('paradas_retorno') as $paradaId)
+                                    @php
+                                        $parada = $paradas->where('id', $paradaId)->first();
+                                    @endphp
+                                    @if($parada)
+                                        <option value="{{ $parada->id }}" selected>{{ $parada->nombre }}</option>
+                                    @endif
+                                @endforeach
+                            @else
+                                @foreach ($paradasRetorno as $parada)
+                                    <option value="{{ $parada->id }}" selected>{{ $parada->nombre }}</option>
+                                @endforeach
+                            @endif
+                            @foreach ($paradas as $parada)
+                                @if (!collect(old('paradas_retorno', $paradasRetorno->pluck('id')->toArray()))->contains($parada->id))
+                                    <option value="{{ $parada->id }}">{{ $parada->nombre }}</option>
+                                @endif
+                            @endforeach
+                        </select>
+                        @error('paradas_retorno')
+                            <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label>Días Activos para vehículos:</label><br>
+                        
+                        @php
+                            // Obtiene los días activos desde la base de datos o los valores antiguos si hay errores de validación
+                            $diasActivos = old('dias_activos', json_decode($ruta->vehiculos->first()->pivot->dias_activos ?? '[]', true));
+                        @endphp
+                       
+                        <div class="form-check form-check-inline">
+                            <input type="checkbox" class="form-check-input @error('dias_activos') is-invalid @enderror" name="dias_activos[]" value="lunes" id="lunes" {{ in_array('lunes', $diasActivos) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="lunes">Lunes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input type="checkbox" class="form-check-input @error('dias_activos') is-invalid @enderror" name="dias_activos[]" value="martes" id="martes" {{ in_array('martes', $diasActivos) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="martes">Martes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input type="checkbox" class="form-check-input @error('dias_activos') is-invalid @enderror" name="dias_activos[]" value="miércoles" id="miércoles" {{ in_array('miércoles', $diasActivos) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="miércoles">Miércoles</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input type="checkbox" class="form-check-input @error('dias_activos') is-invalid @enderror" name="dias_activos[]" value="jueves" id="jueves" {{ in_array('jueves', $diasActivos) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="jueves">Jueves</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input type="checkbox" class="form-check-input @error('dias_activos') is-invalid @enderror" name="dias_activos[]" value="viernes" id="viernes" {{ in_array('viernes', $diasActivos) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="viernes">Viernes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input type="checkbox" class="form-check-input @error('dias_activos') is-invalid @enderror" name="dias_activos[]" value="sábado" id="sábado" {{ in_array('sábado', $diasActivos) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="sábado">Sábado</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input type="checkbox" class="form-check-input @error('dias_activos') is-invalid @enderror" name="dias_activos[]" value="domingo" id="domingo" {{ in_array('domingo', $diasActivos) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="domingo">Domingo</label>
+                        </div>
+                    
+                        @error('dias_activos')
+                            <div class="invalid-feedback d-block"><strong>{{ $message }}</strong></div>
+                        @enderror
+                    </div>
+                    
+                </div>
+
             </div>
         </div>
-    </form>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="{{ route('rutas.index') }}" class="btn btn-danger">Cancelar</a>
+        </div>
+    </div>
+</form>
 @endsection
 
 @push('scriptsHeader')
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.5.1/dist/leaflet.polylineDecorator.min.js"></script>
-
-
-    <style>
-        #map {
-            height: 600px;
-            width: 100%;
-        }
-    </style>
+<script src="{{ asset('assets/js/vendor/forms/selects/bootstrap_multiselect.js') }}"></script>
+<script src="{{ asset('assets/js/vendor/forms/inputs/dual_listbox.min.js') }}"></script>
 @endpush
 
 @push('scriptsFooter')
-<script src="{{ asset('assets/js/vendor/forms/selects/select2.min.js') }}"></script>
 <script>
-    const paradas = @json($paradas);
-    let subrutas = @json($subrutas);
-    let mapa = L.map('map').setView([-1.04315500, -78.59126700], 15);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap'
-    }).addTo(mapa);
-
-
-    // Variable para almacenar el marcador de búsqueda
-    var searchMarker;
-
-    // Agregar el control de geocodificación al mapa
-    var geocoder = L.Control.geocoder({
-        defaultMarkGeocode: false // Para personalizar lo que ocurre al hacer clic en un resultado
-    })
-    .on('markgeocode', function(e) {
-        var center = e.geocode.center;
-        
-        // Eliminar el marcador anterior si existe
-        if (searchMarker) {
-            mapa.removeLayer(searchMarker);
-        }
-        // Crear un nuevo marcador en la ubicación geocodificada
-        searchMarker = L.marker(center)
-            .addTo(mapa)
-            .bindPopup(e.geocode.name)
-            .openPopup();
-        // Centrar el mapa en el marcador
-        mapa.setView(center, 15); // Ajusta el zoom según tus necesidades
-    })
-    .addTo(mapa);
-
-
-
-
-
-    let elementosDibujados = new L.FeatureGroup().addTo(mapa);
-    let controlDeDibujo = new L.Control.Draw({
-        edit: {
-            featureGroup: elementosDibujados,
-            edit: true,
-            remove: true
-        },
-        draw: {
-            polyline: false,
-            polygon: false,
-            circle: false,
-            rectangle: false,
-            marker: false
-        }
-    }).addTo(mapa);
-
-    let polilineas = [];
-    let paradaInicial = null;
-    let paradaFinal = null;
-    let marcadores = {};
-
-    // Iconos personalizados usando FontAwesome
-    const iconoActivo = L.divIcon({
-        html: '<i class="fas fa-map-marker-alt" style="color: blue; font-size: 32px;"></i>',
-        iconSize: [24, 24],
-        className: 'my-div-icon'
+    $('#vehiculos').multiselect({
+        nonSelectedText: 'Seleccione vehículos',
+        nSelectedText: 'seleccionadas',
+        allSelectedText: 'Todas seleccionadas',
+        numberDisplayed: 1,
+        selectAllText: 'Seleccionar todo',
+        filterPlaceholder: 'Buscar'
     });
 
-    const iconoInactivo = L.divIcon({
-        html: '<i class="fas fa-map-marker-alt" style="color: red; font-size: 32px;"></i>',
-        iconSize: [24, 24],
-        className: 'my-div-icon'
+    const listboxSortingElement = document.querySelector("#select_paradas_ida");
+    const listboxSorting = new DualListbox(listboxSortingElement, {
+        sortable: true,
+        addButtonText: "Añadir",
+        removeButtonText: "Eliminar",
+        addAllButtonText: "Añadir todos",
+        removeAllButtonText: "Eliminar todos",
+        searchable: true,
+        searchPlaceholder: "Buscar...",
+        upButtonText: "<i class='ph-caret-up'></i> Subir",
+        downButtonText: "<i class='ph-caret-down'></i> Bajar",
+        availableTitle: "Opciones disponibles",
+        selectedTitle: "Opciones seleccionadas",
+        filterPlaceHolder: "Filtrar...",
+        infoText: "Mostrando todo",
+        infoTextFiltered: "<span class='text-danger'>Filtrado</span>",
+        infoTextEmpty: "Lista vacía",
     });
 
-    paradas.forEach(parada => {
-        let icono = parada.estado === 'INACTIVO' ? iconoInactivo : iconoActivo;
-        let marcador = L.marker([parada.latitud, parada.longitud],{
-            title: parada.nombre,
-            icon:icono
-        }).addTo(mapa)
-        .bindPopup(parada.nombre)
-        .bindTooltip(`<strong>${parada.nombre}</strong>`, { permanent: true, direction: 'right', offset: [10, 0] });
-
-        marcadores[parada.id] = marcador; // Guardar el marcador en el objeto marcadores
-        marcador.on('click', () => manejarClickEnParada(parada));
+    // Configuración similar para `select_paradas_retorno` si es necesario
+    const listboxSortingElement2 = document.querySelector("#select_paradas_retorno");
+    const listboxSorting2 = new DualListbox(listboxSortingElement2, {
+        sortable: true,
+        addButtonText: "Añadir",
+        removeButtonText: "Eliminar",
+        addAllButtonText: "Añadir todos",
+        removeAllButtonText: "Eliminar todos",
+        searchable: true,
+        searchPlaceholder: "Buscar...",
+        upButtonText: "<i class='ph-caret-up'></i> Subir",
+        downButtonText: "<i class='ph-caret-down'></i> Bajar",
+        availableTitle: "Opciones disponibles",
+        selectedTitle: "Opciones seleccionadas",
+        filterPlaceHolder: "Filtrar...",
+        infoText: "Mostrando todo",
+        infoTextFiltered: "<span class='text-danger'>Filtrado</span>",
+        infoTextEmpty: "Lista vacía",
     });
 
-    subrutas.forEach(subruta => {
-        const inicio = subruta.parada_inicio;
-        const final = subruta.parada_final;
-
-        const coordenadas = subruta.coordenadas;
-        let latlngs = coordenadas.map(coord => {
-            if (Array.isArray(coord)) {
-                return [parseFloat(coord[0]), parseFloat(coord[1])];
-            } else {
-                return [parseFloat(coord.lat), parseFloat(coord.lng)];
-            }
-        });
-
-        // Asigna el ID de la subruta al Polyline
-        let polilinea = L.polyline(latlngs, {
-            color: 'blue',
-            id: subruta.id // Asegúrate de que el ID está aquí
-        }).addTo(mapa);
-        elementosDibujados.addLayer(polilinea);
-        polilinea.decorador = crearDecorador(polilinea);
-    });
-
-    function buscarParada(selector) {
-        const paradaId = selector.value;
-        const parada = paradas.find(p => p.id == paradaId);
-        if (parada && marcadores[paradaId]) {
-            mapa.setView([parada.latitud, parada.longitud], 16);
-            marcadores[paradaId].openPopup();
-        }
-    }
-
-    function manejarClickEnParada(parada) {
-        if (!paradaInicial) {
-            paradaInicial = parada;
-            actualizarVisualizacion('parada-inicial', parada.nombre);
-        } else if (!paradaFinal && parada.id !== paradaInicial.id) {
-            paradaFinal = parada;
-            actualizarVisualizacion('parada-final', parada.nombre);
-            agregarRuta(paradaInicial, paradaFinal);
-        }
-    }
-
-    function agregarRuta(inicial, final) {
-        let latlngs = [
-            [inicial.latitud, inicial.longitud],
-            [final.latitud, final.longitud]
-        ];
-        let polilinea = L.polyline(latlngs, {
-            color: 'blue'
-        }).addTo(mapa);
-        elementosDibujados.addLayer(polilinea);
-        polilineas.push(polilinea);
-        polilinea.decorador = crearDecorador(polilinea);
-
-        $.confirm({
-            title: `De: ${inicial.nombre}<br>Ha: ${final.nombre}`,
-            content: `
-            <div class="form-group">
-                <label>Ingrese el tiempo de recorrido en minutos</label>
-                <input type="time" class="form-control tiempo" required autofocus />
-            </div>
-        `,
-            buttons: {
-                guardar: {
-                    text: 'GUARDAR',
-                    btnClass: 'btn-blue',
-                    action: function() {
-                        const tiempoRecorrido = this.$content.find('.tiempo').val();
-                        if (tiempoRecorrido) {
-                            actualizarVisualizacion('tiempo-recorrido', tiempoRecorrido);
-                            guardarSubruta(inicial, final, tiempoRecorrido, latlngs);
-                        } else {
-                            $.alert('Debe ingresar el tiempo de recorrido para completar la ruta.');
-                            return false;
-                        }
-                    }
-                },
-                CANCELAR: function() {
-                     // Remover la polilínea y su decorador del mapa
-                    if (polilinea.decorador) {
-                        mapa.removeLayer(polilinea.decorador);
-                    }
-                     // Remover la polilínea del mapa
-                     mapa.removeLayer(polilinea);
-                    // Eliminar la polilínea de la lista de polilíneas
-                    polilineas = polilineas.filter(p => p !== polilinea);
-                    // Reiniciar selección de paradas
-                    paradaInicial = null;
-                    paradaFinal = null;
-                    actualizarVisualizacion('parada-inicial', 'Ninguna');
-                    actualizarVisualizacion('parada-final', 'Ninguna');
-                    actualizarVisualizacion('tiempo-recorrido', 'N/A');
-                }
-            }
-        });
-    }
-
-    function crearDecorador(polilinea) {
-        return L.polylineDecorator(polilinea, {
-            patterns: [{
-                offset: 25,
-                repeat: 50,
-                symbol: L.Symbol.arrowHead({
-                    pixelSize: 15,
-                    polygon: false,
-                    pathOptions: {
-                        stroke: true,
-                        color: 'blue'
-                    }
-                })
-            }]
-        }).addTo(mapa);
-    }
-
-    function guardarSubruta(inicial, final, tiempo, coordenadas) {
-        const subruta = {
-            'parada_inicio_id': inicial.id,
-            'parada_final_id': final.id,
-            'tiempo_recorrido': tiempo,
-            'coordenadas': coordenadas
-        };
-        subrutas.push(subruta);
-        reiniciarSeleccionDeRuta(final);
-    }
-
-    function reiniciarSeleccionDeRuta(nuevaInicial) {
-        paradaInicial = nuevaInicial;
-        paradaFinal = null;
-        actualizarVisualizacion('parada-inicial', nuevaInicial.nombre);
-        actualizarVisualizacion('parada-final', 'Ninguna');
-        actualizarVisualizacion('tiempo-recorrido', 'N/A');
-    }
-
-    function actualizarVisualizacion(idElemento, valor) {
-        document.getElementById(idElemento).textContent = valor;
-    }
-
-    mapa.on(L.Draw.Event.EDITED, evento => {
-        evento.layers.eachLayer(capa => {
-            const latlngs = capa.getLatLngs();
-            if (latlngs.length > 1) {
-                const [inicio, final] = [latlngs[0], latlngs[latlngs.length - 1]];
-                const paradaInicio = encontrarParadaMasCercana(inicio);
-                const paradaFinal = encontrarParadaMasCercana(final);
-
-                if (paradaInicio && paradaFinal) {
-                    actualizarDecoradorDePolilinea(capa);
-
-                    // Obtener la subruta actual para encontrar su tiempo de recorrido
-                const subrutaActual = subrutas.find(s => 
-                    s.parada_inicio_id === paradaInicio.id && 
-                    s.parada_final_id === paradaFinal.id
-                );
-
-                const tiempoRecorridoActual = subrutaActual ? subrutaActual.tiempo_recorrido : '';
-
-                solicitarRutaEditada(paradaInicio, paradaFinal, latlngs, tiempoRecorridoActual);
-
-                } else {
-                    $.alert("Debe haber una parada de inicio y una parada de final.");
-                }
-            }
-        });
-    });
-
-    mapa.on(L.Draw.Event.DELETED, function(event) {
-        var layers = event.layers;
-        layers.eachLayer(function(layer) {
-            // Obtener el id de la subruta desde las opciones de la capa
-            const subrutaId = layer.options.id;
-
-            if (subrutaId) {
-                $.confirm({
-                    title: 'Confirmar Eliminación',
-                    content: `¿Está seguro de eliminar esta subruta?`,
-                    type: 'red',
-                    theme: 'modern',
-                    icon: 'fa fa-trash fa-2x',
-                    typeAnimated: true,
-                    buttons: {
-                        SI: {
-                            btnClass: 'btn-red',
-                            action: function() {
-                                $.ajax({
-                                    url: '/subrutas/' + subrutaId, // Usa el ID para eliminar la subruta
-                                    method: 'DELETE',
-                                    success: function(response) {
-                                        new Noty({
-                                            text: "Subruta eliminada correctamente.",
-                                            type: "success"
-                                        }).show();
-                                        // Eliminar del array subrutas
-                                        subrutas = subrutas.filter(s => s.id !== subrutaId);
-                                        // Remover el decorador si existe
-                                        if (layer.decorador) {
-                                            mapa.removeLayer(layer.decorador);
-                                        }
-                                        // Remover la capa del mapa
-                                        elementosDibujados.removeLayer(layer);
-                                        // Ajustar la vista del mapa
-                                        ajustarVistaMapa();
-                                    },
-                                    error: function(xhr, status, error) {
-                                        console.error('Error al eliminar la subruta', error);
-                                        try {
-                                            var response = JSON.parse(xhr.responseText);
-                                            new Noty({
-                                                text: "Error: " + response.message,
-                                                type: "error"
-                                            }).show();
-                                        } catch (e) {
-                                            console.error('Error al procesar la respuesta del error:', e);
-                                        }
-                                    }
-                                });
-                            }
-                        },
-                        CANCELAR: function() {
-                            // Revertir la eliminación visual si no se confirma
-                            elementosDibujados.addLayer(layer);
-                        }
-                    }
-                });
-            }
-        });
-    });
-
-    function ajustarVistaMapa() {
-        if (elementosDibujados.getLayers().length > 0) {
-            const bounds = elementosDibujados.getBounds();
-            mapa.fitBounds(bounds);
-        } else {
-            // Si no hay capas dibujadas, restablecer la vista inicial
-            mapa.setView([-1.04315500, -78.59126700], 15);
-        }
-    }
-
-    function actualizarDecoradorDePolilinea(capa) {
-        if (capa.decorador) {
-            mapa.removeLayer(capa.decorador);
-        }
-        capa.decorador = crearDecorador(capa);
-    }
-
-    function solicitarRutaEditada(inicio, final, latlngs,tiempoRecorridoActual) {
-        $.confirm({
-            title: `De: ${inicio.nombre}<br>Ha: ${final.nombre}`,
-            content: `
-            <div class="form-group">
-                <label>Ingrese el tiempo de recorrido editado en minutos</label>
-                <input type="time" class="form-control tiempo" value="${tiempoRecorridoActual}" required />
-            </div>
-        `,
-            buttons: {
-                guardar: {
-                    text: 'Guardar',
-                    btnClass: 'btn-blue',
-                    action: function() {
-                        const tiempoRecorrido = this.$content.find('.tiempo').val();
-                        if (tiempoRecorrido) {
-                            actualizarVisualizacion('tiempo-recorrido', tiempoRecorrido);
-                            actualizarSubruta({
-                                'parada_inicio_id': inicio.id,
-                                'parada_final_id': final.id,
-                                'tiempo_recorrido': tiempoRecorrido,
-                                'coordenadas': latlngs
-                            });
-                        } else {
-                            $.alert('Debe ingresar el tiempo de recorrido para completar la ruta.');
-                            return false;
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    function encontrarParadaMasCercana(punto) {
-        let paradaMasCercana = null;
-        let distanciaMinima = Infinity;
-
-        paradas.forEach(parada => {
-            let distancia = punto.distanceTo([parada.latitud, parada.longitud]);
-            if (distancia < distanciaMinima) {
-                distanciaMinima = distancia;
-                paradaMasCercana = parada;
-            }
-        });
-
-        return paradaMasCercana;
-    }
-
-    function actualizarSubruta(subruta) {
-        const index = subrutas.findIndex(s => s.parada_inicio_id === subruta.parada_inicio_id && s.parada_final_id ===
-            subruta.parada_final_id);
-        if (index !== -1) {
-            subrutas[index] = subruta;
-        } else {
-            subrutas.push(subruta);
-        }
-    }
-
-    function actualizarInputSubrutas() {
-        document.getElementById('subrutas-input').value = JSON.stringify(subrutas);
-    }
-
-    $('.select').select2({
-        placeholder: "Buscar paradas...",
-        allowClear: true
-    });
 </script>
-
 @endpush

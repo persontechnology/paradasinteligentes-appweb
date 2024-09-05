@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,11 +21,14 @@ class Vehiculo extends Model
         'estado',
         'coductor_id',
         'ayudante_id',
-        'ubicacion_actual'
+        'ubicacion_actual',
+        'numero_linea',
+        'velocidad'
     ];
 
     protected $casts = [
-        'ubicacion_actual' => 'array', // Castea ubicacion_actual como array para JSON
+        'ubicacion_actual' => 'array',
+        'velocidad'=>'decimal:2'
     ];
 
     // Accesor para el nombre del conductor
@@ -42,23 +46,28 @@ class Vehiculo extends Model
     // Genera un enlace a Google Maps usando las coordenadas de ubicacion_actual.
     public function enlaceGoogleMaps()
     {
-        // Verifica que ubicacion_actual es un array con latitud y longitud
-        if (is_array($this->ubicacion_actual) && count($this->ubicacion_actual) == 2) {
-            $latitud = $this->ubicacion_actual[0];
-            $longitud = $this->ubicacion_actual[1];
+        // Asegurarse de que ubicacion_actual es un array
+        $ubicacion = is_array($this->ubicacion_actual) ? $this->ubicacion_actual : json_decode($this->ubicacion_actual, true);
+        
+        if (isset($ubicacion[0]) && isset($ubicacion[1])) {
+            $lat = $ubicacion[0];
+            $lng = $ubicacion[0];
 
-            // Construir el enlace de Google Maps
-            return "https://www.google.com/maps?q={$latitud},{$longitud}";
+            // Crear el enlace a Google Maps
+            return "https://www.google.com/maps?q={$lat},{$lng}";
         }
 
-        return null; // Maneja el caso donde las coordenadas no son válidas
+        // Retornar null o un mensaje si no hay ubicación válida
+        return null;
     }
 
-    // Relación muchos a muchos con Ruta
     public function rutas()
     {
-        return $this->belongsToMany(Ruta::class, 'vehiculo_rutas')->withPivot('dias_activos');
+        return $this->belongsToMany(Ruta::class, 'ruta_vehiculos')
+        ->withPivot('dias_activos')
+        ->where('rutas.estado', 'ACTIVO');
     }
+    
 
     // Relación uno a muchos (inversa) con User para conductor
     public function conductor()
@@ -66,15 +75,27 @@ class Vehiculo extends Model
         return $this->belongsTo(User::class, 'coductor_id');
     }
 
-    // Relación uno a muchos (inversa) con User para ayudante
+    // Relación uno a muchos (innumero_lineaversa) con User para ayudante
     public function ayudante()
     {
         return $this->belongsTo(User::class, 'ayudante_id');
     }
 
-    public function vehiculoRutas()
+
+    public function rutasActivasHoy()
     {
-        return $this->hasMany(VehiculoRuta::class);
+        // Obtiene el día actual en español, por ejemplo, "lunes"
+        $diaActual = Carbon::now()->locale('es')->dayName;
+
+        return $this->rutas()->where(function ($query) use ($diaActual) {
+            $query->whereJsonContains('ruta_vehiculos.dias_activos', $diaActual);
+        })->with(['tipoRutaIda', 'tipoRutaRetorno'])->get()->map(function($ruta) {
+            return [
+                'ruta' => $ruta,
+                'coordenadas_ida' => $ruta->tipoRutaIda ? $ruta->tipoRutaIda->coordenadas : null,
+                'coordenadas_retorno' => $ruta->tipoRutaRetorno ? $ruta->tipoRutaRetorno->coordenadas : null,
+            ];
+        });
     }
 
 

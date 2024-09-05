@@ -56,3 +56,28 @@ Breadcrumbs::for('vehiculos.horario', function (BreadcrumbTrail $trail,$model) {
     $trail->parent('vehiculos.index');
     $trail->push('Horario', route('vehiculos.horario',$model));
 });
+Breadcrumbs::for('vehiculos.veren.mapa', function (BreadcrumbTrail $trail) {
+    $trail->parent('vehiculos.index');
+    $trail->push('Ver en mapa', route('vehiculos.veren.mapa'));
+});
+Breadcrumbs::for('vehiculos.ubicacion', function (BreadcrumbTrail $trail,$model) {
+    $trail->parent('vehiculos.index');
+    $trail->push('Ubicación', route('vehiculos.ubicacion',$model));
+});
+Breadcrumbs::for('vehiculos.recorridos', function (BreadcrumbTrail $trail,$model) {
+    $trail->parent('vehiculos.ubicacion',$model);
+    $trail->push('Recorridos', route('vehiculos.recorridos',$model));
+});
+
+
+// poisicion-vehiculos
+Breadcrumbs::for('poisicion-vehiculos.index', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Posición de vehículos', route('poisicion-vehiculos.index'));
+});
+
+// configuracion
+Breadcrumbs::for('configuracion.index', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Configuración', route('configuracion.index'));
+});

@@ -11,21 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vehiculo_rutas', function (Blueprint $table) {
+        Schema::create('recorridos', function (Blueprint $table) {
             $table->id();
-            $table->json('dias_activos')->nullable();
+            $table->foreignId('tipo_ruta_id')->constrained('tipo_rutas')->onDelete('cascade');
+            $table->foreignId('parada_id')->constrained('paradas')->onDelete('cascade');
+            $table->integer('orden')->nullable();
             $table->timestamps();
-            $table->foreignId('vehiculo_id')->nullable()->constrained('vehiculos')->onDelete('cascade');
-            $table->foreignId('ruta_id')->nullable()->constrained('rutas')->onDelete('cascade');
-            
         });
     }
-    
+
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('vehiculo_rutas');
+        Schema::dropIfExists('recorridos');
     }
 };

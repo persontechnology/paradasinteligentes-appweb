@@ -9,16 +9,29 @@ class Ruta extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nombre', 'descripcion', 'estado'];
+    protected $fillable = [
+        'nombre',
+        'estado',
+        'distancia_total',
+        'tiempo_total_ruta'
+    ];
 
-    public function subRutas()
-    {
-        return $this->hasMany(SubRuta::class);
-    } 
-
-     // Relación muchos a muchos con Vehiculo
+    
     public function vehiculos()
     {
-        return $this->belongsToMany(Vehiculo::class, 'vehiculo_rutas')->withPivot('dias_activos');
+        return $this->belongsToMany(Vehiculo::class, 'ruta_vehiculos')->withPivot('dias_activos');
     }
+ 
+  
+    public function tipoRutaIda()
+    {
+        return $this->hasOne(TipoRuta::class)->where('tipo', 'IDA');
+    }
+
+    public function tipoRutaRetorno()
+    {
+        return $this->hasOne(TipoRuta::class)->where('tipo', 'RETORNO');
+    }
+    
+    
 }

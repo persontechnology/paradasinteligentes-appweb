@@ -4,6 +4,10 @@
     </a>
 
     <div class="dropdown-menu">
+        <a href="{{ route('vehiculos.ubicacion',$vehiculo) }}" class="dropdown-item">
+            <i class="ph ph-map-pin me-2"></i>
+            Ver ubicación
+        </a>
         <a href="{{ route('vehiculos.horario',$vehiculo) }}" class="dropdown-item">
             <i class="ph ph-calendar-blank me-2"></i>
             Horario

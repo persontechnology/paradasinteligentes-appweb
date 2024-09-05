@@ -69,7 +69,23 @@
                     </div>
                 </div>
 
-                <div class="col-lg-8 mb-2">
+                
+
+                <div class="col-lg-4 mb-2">
+                    <div class="form-floating form-control-feedback form-control-feedback-start">
+                        <div class="form-control-feedback-icon">
+                            <i class="ph ph-number-square-one"></i>
+                        </div>
+                        <input type="number" name="numero_linea" value="{{ old('numero_linea') }}" class="form-control @error('numero_linea') is-invalid @enderror" placeholder="Placeholder" required>
+                        <label>Número de Línea<i class="text-danger">*</i></label>
+                        @error('numero_linea')
+                            <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        @enderror
+                    </div>
+                </div>
+
+
+                <div class="col-lg-4 mb-2">
                     <div class="form-floating form-control-feedback form-control-feedback-start">
                         <div class="form-control-feedback-icon">
                             <i class="ph ph-text-aa"></i>
@@ -170,6 +186,30 @@
                     </div>
                 </div>
 
+                <div class="col-lg-6 mb-2">
+                    <div class="form-floating form-control-feedback form-control-feedback-start">
+                        <div class="form-control-feedback-icon">
+                            <i class="ph ph-map-pin"></i>
+                        </div>
+                        <input type="text" name="latitud" value="{{ old('latitud') }}" class="form-control @error('latitud') is-invalid @enderror" placeholder="Placeholder" required>
+                        <label>Latitud<i class="text-danger">*</i></label>
+                        @error('latitud')
+                            <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        @enderror
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-2">
+                    <div class="form-floating form-control-feedback form-control-feedback-start">
+                        <div class="form-control-feedback-icon">
+                            <i class="ph ph-map-pin"></i>
+                        </div>
+                        <input type="text" name="longitud" value="{{ old('longitud') }}" class="form-control @error('longitud') is-invalid @enderror" placeholder="Placeholder" required>
+                        <label>Longitud<i class="text-danger">*</i></label>
+                        @error('longitud')
+                            <div class="invalid-feedback"><strong>{{ $message }}</strong></div>
+                        @enderror
+                    </div>
+                </div>
        
 
 

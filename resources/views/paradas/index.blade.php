@@ -1,475 +1,243 @@
 @extends('layouts.app')
 
-@section('breadcrumb')
-    {{ Breadcrumbs::render('paradas.index') }}
-@endsection
-
 @section('content')
     <div class="card">
         <div class="card-header">
-            <div class="mb-1">
-                <span class="badge bg-primary">{{ $paradas_activas }} ACTIVOS</span>
-                <span class="badge bg-danger">{{ $paradas_inactivas }} INACTIVOS</span>
+            <div class="row mb-3">
+                <label class="col-form-label col-lg-2">Buscar parada:</label>
+                <div class="col-lg-10">
+                    <select id="parada-select" onchange="buscarParada(this);" class="form-control multiselect" data-enable-filtering="true" data-enable-case-insensitive-filtering="true">
+                        <option value="">Seleccione parada</option>
+                        @foreach ($paradas as $pa)
+                            <option value="{{ $pa->id }}">{{ $pa->nombre }}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
-            
-            <div class="input-group">
-                <select class="form-control select" data-width="auto;" data-placeholder="Buscar paradas..." onchange="buscarParada(this);">
-                    <option></option>
-                    @foreach ($paradas as $parada)
-                    <option value="{{ $parada->id }}">{{ $parada->nombre }}</option>
-                    @endforeach
-                </select>
-                <button type="button" onclick="abrir_modal_paradas(this);" class="btn btn-success">Ver en listado</button>
-            </div>
+
         </div>
         <div class="card-body">
-            <div id="mapid"></div>
+            <div id="map" style="height: 600px;"></div>
         </div>
+        <div class="card-footer text-muted">Footer</div>
     </div>
-
-      <!-- paradas modal -->
-	<div id="modal_paradas" class="modal fade" tabindex="-1">
-		<div class="modal-dialog modal-dialog-scrollable modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">Listado de paradas</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-				</div>
-
-				<div class="modal-body">
-					<div class="table-responsive">
-                        {{ $dataTable->table() }}
-                    </div>
-				</div>
-
-				<div class="modal-footer">
-					<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- /paradas modal -->
 @endsection
 
 @push('scriptsHeader')
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+<script src="{{ asset('assets/js/vendor/forms/selects/bootstrap_multiselect.js') }}"></script>
 
-    <style>
-        #mapid {
-            height: 600px;
-        }
-    </style>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
+<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
+<script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.5.1/dist/leaflet.polylineDecorator.min.js"></script>
+
 @endpush
 
 @push('scriptsFooter')
-    <script src="{{ asset('assets/js/vendor/forms/selects/select2.min.js') }}"></script>
-    
-    <script>
-        
-        var paradas=@json($paradas);
+<script>
+    // Inicializa el multiselect
+    $('#parada-select').multiselect({
+        nonSelectedText: 'Seleccione parada',
+        filterPlaceholder: 'Buscar'
+    });
 
-        var map = L.map('mapid').setView([40.712776, -74.005974], 13);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 18,
-            attribution: '© OpenStreetMap'
-        }).addTo(map);
-
-
-
-
-        // Variable para almacenar el marcador de búsqueda
-        var searchMarker;
-
-        // Agregar el control de geocodificación al mapa
-        var geocoder = L.Control.geocoder({
-            defaultMarkGeocode: false // Para personalizar lo que ocurre al hacer clic en un resultado
-        })
-        .on('markgeocode', function(e) {
-            var center = e.geocode.center;
-            
-            // Eliminar el marcador anterior si existe
-            if (searchMarker) {
-                map.removeLayer(searchMarker);
+    var map = L.map('map',{
+            fullscreenControl: true,
+            fullscreenControlOptions: {
+                position: 'topleft'
             }
-            // Crear un nuevo marcador en la ubicación geocodificada
-            searchMarker = L.marker(center)
-                .addTo(map)
-                .bindPopup(e.geocode.name)
-                .openPopup();
-            // Centrar el mapa en el marcador
-            map.setView(center, 15); // Ajusta el zoom según tus necesidades
-        })
-        .addTo(map);
+        }).setView([-1.0446150076621883, -78.59029481937694], 16);
 
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
+    // Variable para almacenar el marcador de búsqueda
+    var searchMarker;
 
-        var drawnItems = new L.FeatureGroup();
-        map.addLayer(drawnItems);
+    // Agregar el control de geocodificación al mapa
+    var geocoder = L.Control.geocoder({
+        defaultMarkGeocode: false // Para personalizar lo que ocurre al hacer clic en un resultado
+    })
+    .on('markgeocode', function(e) {
+        var center = e.geocode.center;
 
-        var drawControl = new L.Control.Draw({
-            edit: {
-                featureGroup: drawnItems
-            },
-            draw: {
-                polygon: true,
-                marker: false,
-                circle: false,
-                rectangle: false,
-                polyline: false,
-                circlemarker: false
-            }
-        });
-        map.addControl(drawControl);
-
-        map.on('draw:created', function(e) {
-            var layer = e.layer;
-
-            $.confirm({
-                title: 'Parada',
-                content: '' +
-                    '<div class="form-group">' +
-                    '<label>Ingrese nombre de parada</label>' +
-                    '<input type="text" placeholder="" class="nombre_parada form-control" value="" required />' +
-                    '</div>',
-                buttons: {
-                    guardar: {
-                        text: 'Guadar',
-                        btnClass: 'btn-blue',
-                        action: function() {
-                            var nombre = this.$content.find('.nombre_parada').val();
-                            if (nombre) {
-                                var geojson = layer.toGeoJSON();
-                                if (geojson.geometry && geojson.geometry.coordinates.length > 0) {
-                                    var latlngs = geojson.geometry.coordinates[0].map(coord => [coord[
-                                        1], coord[0]
-                                    ]);
-                                    if (latlngs.length > 0) {
-                                        $.ajax({
-                                            url: '/api-paradas',
-                                            method: 'POST',
-                                            contentType: 'application/json',
-                                            data: JSON.stringify({
-                                                nombre: nombre,
-                                                latitud: latlngs[0][0],
-                                                longitud: latlngs[0][1],
-                                                geocerca: JSON.stringify(latlngs)
-                                            }),
-                                            success: function(response) {
-
-                                                new Noty({
-                                                    text: "" + response.message,
-                                                    type: "alert"
-                                                }).show();
-                                                
-                                                layer.options.id = response.id;
-                                                layer.options.nombre = response.nombre;
-
-                                                layer.bindPopup(nombre).openPopup();
-                                                drawnItems.addLayer(layer);
-                                                fitMapToBounds();// Ajustar la vista del mapa
-                                            },
-                                            error: function(xhr, status, error) {
-                                                console.error('Error al guardar la parada',
-                                                    error);
-                                                try {
-                                                    // Intenta analizar el error como JSON
-                                                    var response = JSON.parse(xhr
-                                                        .responseText);
-                                                    // Muestra el mensaje en la consola
-                                                    new Noty({
-                                                        text: "" + response.message,
-                                                        type: "error"
-                                                    }).show();
-
-                                                } catch (e) {
-                                                    // Si la respuesta no es JSON o hay otro error
-                                                    console.error(
-                                                        'Error al procesar la respuesta del error:',
-                                                        e);
-                                                }
-
-                                            }
-                                        });
-                                    }
-                                }
-                            } else {
-                                $.alert('Se requiere un nombre para la parada.');
-                                layer.remove();
-                                return false;
-                            }
-
-                        }
-                    },
-                    cancelar: function() {
-                        layer.remove();
-                    }
-                }
-            });
-
-        });
-
-        map.on('draw:edited', function(e) {
-            var layers = e.layers;
-            layers.eachLayer(function(layer) {
-
-                $.confirm({
-                    title: 'Parada',
-                    content: '' +
-                        '<div class="form-group">' +
-                        '<label>Ingrese nombre de parada</label>' +
-                        '<input type="text" placeholder="" class="nombre_parada form-control" value="' +layer.options.nombre + '" required />' +
-                        '</div>',
-                    buttons: {
-                        guardar: {
-                            text: 'Guadar',
-                            btnClass: 'btn-blue',
-                            action: function() {
-                                var nombre = this.$content.find('.nombre_parada').val();
-                                if (nombre) {
-                                    var geojson = layer.toGeoJSON();
-                                    var latlngs = geojson.geometry.coordinates[0].map(coord => [
-                                        coord[1], coord[0]
-                                    ]);
-                                    var id = layer.options.id; // Asegúrate de asignar un ID al crear el polígono
-
-                                    $.ajax({
-                                        url: '/api-paradas/' + id,
-                                        method: 'PUT',
-                                        contentType: 'application/json',
-                                        data: JSON.stringify({
-                                            nombre: nombre,
-                                            latitud: latlngs[0][0],
-                                            longitud: latlngs[0][1],
-                                            geocerca: JSON.stringify(latlngs)
-                                        }),
-                                        success: function(response) {
-
-                                            new Noty({
-                                                text: "" + response.message,
-                                                type: "alert"
-                                            }).show();
-                                            layer.bindPopup(nombre).openPopup();
-                                            fitMapToBounds
-                                        (); // Ajustar la vista del mapa
-                                        },
-                                        error: function(xhr, status, error) {
-                                            console.error(
-                                                'Error al actualizar la parada',
-                                                error);
-                                            try {
-                                                // Intenta analizar el error como JSON
-                                                var response = JSON.parse(xhr
-                                                    .responseText);
-                                                // Muestra el mensaje en la consola
-                                                new Noty({
-                                                    text: "" + response
-                                                        .message,
-                                                    type: "error"
-                                                }).show();
-
-                                            } catch (e) {
-                                                // Si la respuesta no es JSON o hay otro error
-                                                console.error(
-                                                    'Error al procesar la respuesta del error:',
-                                                    e);
-                                            }
-
-                                        }
-                                    });
-                                }
-
-                            }
-                        },
-                        cancelar: function() {
-
-                        }
-                    }
-                });
-
-
-            });
-        });
-
-        map.on('draw:deleted', function(e) {
-            var layers = e.layers;
-            layers.eachLayer(function(layer) {
-                var id = layer.options.id; // Asegúrate de que cada capa tenga un ID
-                var nombre = layer.options.nombre;
-                $.confirm({
-                    title: 'Está seguro de eliminar.!',
-                    content: "" + nombre,
-                    type: 'red',
-                    theme: 'modern',
-                    icon: 'fa fa-trash fa-2x',
-                    typeAnimated: true,
-                    buttons: {
-                        SI: {
-                            action: function() {
-                                $.ajax({
-                                    url: '/api-paradas/' + id,
-                                    method: 'DELETE',
-                                    success: function() {
-                                        new Noty({
-                                            text: "Parada eliminado.",
-                                            type: "alert"
-                                        }).show();
-                                        fitMapToBounds
-                                    (); // Ajustar la vista del mapa
-                                    },
-                                    error: function(xhr, status, error) {
-                                        console.error('Error al eliminar la parada',
-                                            error);
-                                        try {
-                                            // Intenta analizar el error como JSON
-                                            var response = JSON.parse(xhr
-                                                .responseText);
-                                            // Muestra el mensaje en la consola
-                                            new Noty({
-                                                text: "" + response.message,
-                                                type: "error"
-                                            }).show();
-
-                                        } catch (e) {
-                                            // Si la respuesta no es JSON o hay otro error
-                                            console.error(
-                                                'Error al procesar la respuesta del error:',
-                                                e);
-                                        }
-                                    }
-                                });
-                            }
-                        },
-                        NO: function() {
-                            layer.bindPopup(nombre).openPopup();
-                            drawnItems.addLayer(layer);
-                        }
-                    }
-                });
-
-            });
-        });
-
-        // Objeto para almacenar las capas de las paradas por su ID
-        var paradaLayers = {};
-        function fetchParadas(){
-            
-            paradas.forEach(function(parada) {
-                if (parada.geocerca) {
-                    var coordinates = JSON.parse(parada.geocerca);
-                    var polygon = L.polygon(coordinates, {
-                        color: parada.estado=='ACTIVO'?'blue':'red',
-                        id: parada.id, // Guardar ID para operaciones futuras
-                        nombre: parada.nombre
-                    }).bindPopup(parada.nombre)
-                    .bindTooltip(`<strong>${parada.nombre}</strong>`, { permanent: true, direction: 'right', offset: [10, 0] });
-                    drawnItems.addLayer(polygon);
-                    // Almacenar la capa en el objeto paradaLayers
-                    paradaLayers[parada.id] = polygon;
-                }
-            });
-            fitMapToBounds();
+        // Eliminar el marcador anterior si existe
+        if (searchMarker) {
+            map.removeLayer(searchMarker);
         }
+        // Crear un nuevo marcador en la ubicación geocodificada
+        searchMarker = L.marker(center)
+            .addTo(map)
+            .bindPopup(e.geocode.name)
+            .openPopup();
+        // Centrar el mapa en el marcador
+        map.setView(center, 15); // Ajusta el zoom según tus necesidades
+    })
+    .addTo(map);
 
-        
+    // Capa donde se guardan las paradas editables
+    var editableLayers = new L.FeatureGroup();
+    map.addLayer(editableLayers);
 
-        function fitMapToBounds() {
-            if (drawnItems.getLayers().length > 0) {
-                var bounds = drawnItems.getBounds();
-                map.fitBounds(bounds);
-            }
+    // Inicializar el control de dibujo
+    var drawControl = new L.Control.Draw({
+        draw: {
+            polyline: false,
+            polygon: false,
+            circle: false,
+            rectangle: false,
+            marker: true,
+            circlemarker: false
+        },
+        edit: {
+            featureGroup: editableLayers, // Capa donde se guardan las paradas
+            remove: true
         }
+    });
+    map.addControl(drawControl);
 
-        $(document).ready(function() {
-            fetchParadas();
-        });
+    // Cargar paradas existentes y ajustar el mapa
+    var paradas = @json($paradas);
+    var bounds = new L.LatLngBounds(); // Crear un bounds para ajustar la vista del mapa
+    var paradasMarkers = {}; // Objeto para almacenar marcadores de paradas por ID
 
-        function buscarParada(selectElement) {
-            // Obtiene el ID de la parada seleccionada
-            var selectedId = selectElement.value;
-            mostrarParadaMapa(selectedId);
+    paradas.forEach(function(parada) {
+        var coords = JSON.parse(parada.coordenadas);
+
+        var marker = L.marker([coords[0], coords[1]], {
+            paradaId: parada.id,
+            nombre: parada.nombre // Asociar nombre de la parada al marcador
+        }).addTo(editableLayers)
+        .bindPopup(parada.nombre)
+        .bindTooltip(`<strong>${parada.nombre}</strong>`, { permanent: true, direction: 'right', offset: [0, 0] });
+
+        bounds.extend(marker.getLatLng()); // Extender el bounds para incluir este marcador
+
+        // Guardar el marcador en el objeto paradasMarkers
+        paradasMarkers[parada.id] = marker;
+    });
+
+    // Ajustar el mapa para que muestre todas las paradas
+    if (paradas.length > 0) {
+        map.fitBounds(bounds);
+    }
+
+    // Función para buscar y centrar en la parada seleccionada
+    function buscarParada(selectElement) {
+        var paradaId = selectElement.value;
+
+        if (paradaId && paradasMarkers[paradaId]) {
+            var latLng = paradasMarkers[paradaId].getLatLng();
+            map.setView(latLng, 18); // Centrar el mapa en la ubicación de la parada seleccionada con un zoom de 18
+            paradasMarkers[paradaId].openPopup(); // Abrir el popup del marcador seleccionado
         }
-        function mostrarParadaMapa(idParada){
-            // Busca la parada por ID usando paradaLayers
-            var paradaLayer = paradaLayers[idParada];
+    }
 
-            if (paradaLayer) {
-                // Calcula el centro de la geocerca
-                var bounds = paradaLayer.getBounds();
-                var center = bounds.getCenter();
+    // Manejar la creación de nuevas paradas
+    map.on(L.Draw.Event.CREATED, function(event) {
+        var layer = event.layer;
+        var coords = layer.getLatLng();
 
-                // Centra el mapa en la parada seleccionada con un zoom adecuado
-                map.setView(center, 16); // Ajusta el nivel de zoom según sea necesario
-                
-                // Abre el popup de la capa
-                paradaLayer.openPopup();
-            } else {
-                
-                // Muestra el mensaje en la consola
-                new Noty({
-                    text: "Parada no encontrada.",
-                    type: "error"
-                }).show();
-            }
-        }
-
-        function abrir_modal_paradas(){
-            $('#modal_paradas').modal('show');
-        }
-        function cerrar_modal_paradas(){
-            $('#modal_paradas').modal('hide');
-        }
-
-        function cambiarEstadoParada(checkbox) {
-            var paradaId = checkbox.value;
-            var nuevoEstado = checkbox.checked ? 'ACTIVO' : 'INACTIVO';
-
+        var nombre = prompt("Ingrese el nombre de la parada:");
+        if (nombre) {
             $.ajax({
-                url: '/api-paradas/' + paradaId + '/estado',
-                method: 'PATCH',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    estado: nuevoEstado
-                }),
+                url: '{{ route("paradas.store") }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    nombre: nombre,
+                    coordenadas: [coords.lat, coords.lng]
+                },
                 success: function(response) {
+                    layer.bindPopup(nombre).openPopup();
+                    editableLayers.addLayer(layer);
                     new Noty({
-                        text: "" + response.message,
-                        type: "alert"
+                        text: 'Parada creada exitosamente',
+                        type: "success"
                     }).show();
 
-                    // Actualiza el texto de la etiqueta para reflejar el nuevo estado
-                    var label = document.querySelector('label[for="estado_parada_' + paradaId + '"]');
-                    label.textContent = nuevoEstado;
-                    var paradaLayer = paradaLayers[paradaId];
-                    paradaLayer.setStyle({ color: response.color });
-
+                    // Añadir la nueva parada a los bounds y reajustar el mapa
+                    bounds.extend(layer.getLatLng());
+                    map.fitBounds(bounds);
                 },
-                error: function(xhr, status, error) {
-                    console.error('Error al actualizar el estado de la parada:', error);
-                    try {
-                        var response = JSON.parse(xhr.responseText);
-                        new Noty({
-                            text: "Error: " + response.message,
-                            type: "error"
-                        }).show();
-                    } catch (e) {
-                        console.error('Error al procesar la respuesta del error:', e);
-                    }
-
-                    // Revertir el cambio en el checkbox si ocurre un error
-                    checkbox.checked = !checkbox.checked;
+                error: function(xhr) {
+                    $.alert('Error al crear la parada: ' + xhr.responseText);
+                    map.removeLayer(layer); // Eliminar el marcador si la creación falla
                 }
             });
         }
+    });
 
+    // Manejar la eliminación de paradas
+    map.on('draw:deleted', function(event) {
+        var layers = event.layers;
+        layers.eachLayer(function(layer) {
+            var paradaId = layer.options.paradaId;
+            if (paradaId) {
+                $.ajax({
+                    url: '{{ url("/paradas/") }}/' + paradaId,
+                    type: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        new Noty({
+                            text: 'Parada eliminada exitosamente',
+                            type: "success"
+                        }).show();
+                    },
+                    error: function(xhr) {
+                        $.alert('Error al eliminar la parada: ' + xhr.responseText);
+                    }
+                });
+            }
+        });
+    });
 
-        $('.select').select2();
+    // Manejar la edición de paradas existentes
+    map.on('draw:edited', function(event) {
+        var layers = event.layers;
+        layers.eachLayer(function(layer) {
+            var paradaId = layer.options.paradaId;
+            var coords = layer.getLatLng();
+            var currentName = layer.options.nombre;
 
-    </script>
-    {{ $dataTable->scripts() }}
+            if (paradaId) {
+                var newName = prompt("Modifique el nombre de la parada:", currentName);
+
+                if (newName !== null) { // Solo si se modifica el nombre
+                    $.ajax({
+                        url: '{{ url("/paradas/") }}/' + paradaId + '/actualizar-coordenadas',
+                        type: 'PUT',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            nombre: newName,
+                            coordenadas: [coords.lat, coords.lng]
+                        },
+                        success: function(response) {
+                            layer.bindPopup(newName).openPopup();
+                            layer.options.nombre = newName; // Actualizar el nombre en las opciones del marcador
+                            new Noty({
+                                text: 'Parada actualizada exitosamente',
+                                type: "success"
+                            }).show();
+                        },
+                        error: function(xhr) {
+                            $.alert('Error al actualizar la parada: ' + xhr.responseText);
+                        }
+                    });
+                }
+            }
+        });
+    });
+
+</script>
 @endpush
+
+
+

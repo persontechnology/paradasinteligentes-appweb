@@ -81,6 +81,7 @@ class VehiculoDataTable extends DataTable
                   ->title('Acción')
                   ->addClass('text-center'),
             Column::make('foto')->searchable(false),
+            Column::make('numero_linea')->title('# Línea'),
             Column::make('ubicacion_actual')->searchable(false),
             Column::make('codigo')->title('Código'),
             Column::make('placa'),

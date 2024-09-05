@@ -15,9 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('nombre');
-            $table->decimal('latitud', 10, 8);
-            $table->decimal('longitud', 11, 8);
-            $table->json('geocerca'); // Asegúrate de que tu base de datos soporte el tipo JSON
+            $table->json('coordenadas');
             $table->enum('estado',['ACTIVO','INACTIVO'])->default('ACTIVO');
         });
     }

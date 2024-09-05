@@ -1,1 +1,3 @@
-<a href="{{ $vehiculo->enlaceGoogleMaps() }}" target="_blank">Ver en Google Maps</a>
+<a href="{{ route('vehiculos.ubicacion',$vehiculo->id) }}">
+    <i class="ph ph-map-pin"></i> Ver
+</a>
